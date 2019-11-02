@@ -52,7 +52,12 @@ describe('Integration user exercises tests', () => {
 
     before(async () => {
       mocks.mockAuth({ times: 2, profile: professorProfile });
-      mocks.mockGetCourse({ courseId, guideId, course, times: 2 });
+      mocks.mockGetCourse({
+        courseId,
+        guideId,
+        course,
+        times: 2
+      });
 
       derivativeExercise = {
         exercise: 'dx',
