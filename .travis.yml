@@ -1,0 +1,20 @@
+language: node_js
+node_js:
+  - 11.5
+install:
+  - npm ci
+services:
+  - postgresql
+cache: npm
+env:
+  global:
+  - NODE_ENV=test
+
+before_script:
+  - psql -c 'CREATE DATABASE exercises_service_test;' -U postgres
+  - npm install -g knex
+  - npm run db:latest
+script:
+  - npm test
+after_success:
+  - npm run coverage

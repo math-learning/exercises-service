@@ -4,6 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
     "lint": "NODE_ENV=test eslint src test db",
     "lint:fix": "NODE_ENV=test eslint --fix src test db",
     "test:app": "export NODE_ENV=test && npm run db:latest && node ./node_modules/.bin/_mocha",
@@ -40,9 +41,10 @@
   "license": "ISC",
   "devDependencies": {
     "chai": "~3.5.0",
+    "coveralls": "^3.0.7",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-plugin-import": "^2.18.2",
     "mocha": "~3.3.0",
-    "nyc": "~11.1.0"
+    "nyc": "^11.1.0"
   }
 }

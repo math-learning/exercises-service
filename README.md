@@ -1,5 +1,7 @@
 # Exercises-service
 
+[![Coverage Status](https://coveralls.io/repos/github/math-learning/exercises-service/badge.svg)](https://coveralls.io/github/math-learning/exercises-service)
+
 Service of the Math Learning platform. Used to store and resolve different type of exercises.
 
 
