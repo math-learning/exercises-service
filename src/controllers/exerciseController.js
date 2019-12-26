@@ -6,7 +6,7 @@ const exerciseService = require('../services/exerciseService');
 const allowedExerciseTypes = ['derivative', 'integral'];
 
 const extractMetadata = (body) => (
-  _.pick(body, ['exercise', 'name', 'description', 'type', 'difficulty'])
+  _.pick(body, ['problemInput', 'name', 'description', 'type', 'difficulty'])
 );
 
 const validateMetadata = (metadata) => {
@@ -28,12 +28,12 @@ const create = async (req, res) => {
   const exerciseMetadata = extractMetadata(req.body);
   validateMetadata(exerciseMetadata);
 
-  if (!exerciseMetadata.exercise
+  if (!exerciseMetadata.problemInput
     || !exerciseMetadata.name
     || !exerciseMetadata.type
     || !exerciseMetadata.difficulty
   ) {
-    return Promise.reject(createError.BadRequest('exercise, name, type or difficulty have not been provided'));
+    return Promise.reject(createError.BadRequest('problemInput, name, type or difficulty have not been provided'));
   }
 
   const createdExercise = await exerciseService.create({

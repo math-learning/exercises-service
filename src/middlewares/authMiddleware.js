@@ -9,7 +9,7 @@ const usersClient = require('../clients/usersClient');
 module.exports = async (req, res, next) => {
   const { context } = req;
 
-  if (!context.token) {
+  if (!context.accessToken) {
     next(createError.BadRequest('Authorization has not been provided'));
   }
 

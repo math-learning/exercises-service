@@ -33,8 +33,7 @@ const listExercises = async ({ courseId, guideId }) => {
     .select('*')
     .where(snakelize({ courseId, guideId }))
     .orderBy('created_at')
-    .then(processDbResponse)
-    .catch((e) => console.log(e));
+    .then(processDbResponse);
 };
 
 /**

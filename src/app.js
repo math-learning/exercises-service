@@ -17,6 +17,7 @@ const courseValidatorMiddleware = require('./middlewares/courseValidatorMiddlewa
 const statusController = require('./controllers/statusController');
 const usersController = require('./controllers/usersController');
 const exerciseController = require('./controllers/exerciseController');
+const resolutionController = require('./controllers/resolutionController');
 
 const app = express();
 const { port } = configs.app;
@@ -48,13 +49,12 @@ router.delete('/courses/:courseId/guides/:guideId/exercises/:exerciseId', course
 // User Exercises
 router.get('/courses/:courseId/guides/:guideId/user/exercises', courseValidatorMiddleware, usersController.listExercises);
 router.get('/courses/:courseId/guides/:guideId/user/exercises/:exerciseId', courseValidatorMiddleware, usersController.getExercise);
-router.patch('/courses/:courseId/guides/:guideId/user/exercises/:exerciseId', courseValidatorMiddleware, usersController.updateExercise);
+router.put('/courses/:courseId/guides/:guideId/user/exercises/:exerciseId', courseValidatorMiddleware, usersController.updateExercise); // TODO: should be patch. but cors doesnt allow it
 
 // Resolution
-// router.post('/courses/:courseId/guides/:guideId/exercises/:exerciseId/validate', resolutionController.validate);
-// router.post('/courses/:courseId/guides/:guideId/exercises/:exerciseId/resolve', resolutionController.resolve);
-// router.post('/courses/:courseId/guides/:guideId/exercises/:exerciseId/help', resolutionController.help);
-
+router.delete('/courses/:courseId/guides/:guideId/exercises/:exerciseId/step', resolutionController.removeStep);
+router.post('/courses/:courseId/guides/:guideId/exercises/:exerciseId/resolve', resolutionController.resolve); // TODO: /step ?
+router.post('/courses/:courseId/guides/:guideId/exercises/:exerciseId/help', resolutionController.askHelp);
 
 app.use(router);
 

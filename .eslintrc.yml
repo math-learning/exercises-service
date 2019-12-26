@@ -5,5 +5,8 @@ plugins:
   - import
 rules: {
   no-console: off,
-  comma-dangle: off
+  comma-dangle: off,
+  no-use-before-define: off,
+  padded-blocks: off,
+  object-curly-newline: off
 }

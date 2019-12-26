@@ -5,13 +5,17 @@ module.exports = {
     port: '9000'
   },
   services: {
-    mathSolver: {
+    mathResolverService: {
       url: {
         protocol: 'http',
         hostname: 'localhost',
         port: '5000'
       },
-      paths: {}
+      paths: {
+        validate: '/validate',
+        resolve: '/resolve',
+        help: '/help',
+      }
     },
     usersService: {
       url: {
@@ -32,7 +36,7 @@ module.exports = {
       paths: {
         course: ({ courseId }) => `/courses/${courseId}`,
         guide: ({ courseId, guideId }) => `/courses/${courseId}/guides/${guideId}`
-      }
+      },
     }
   },
   db: {

@@ -4,7 +4,7 @@ exports.up = (knex) => {
 
     create TYPE type as enum('derivative', 'integral');
     create TYPE difficulty as enum('easy', 'normal', 'hard');
-    create TYPE exercise_state as enum('completed', 'incompleted', 'failed');
+    create TYPE exercise_state as enum('resolved', 'incompleted');
 
     CREATE TABLE exercises(
       exercise_id CHARACTER VARYING(64) PRIMARY KEY DEFAULT uuid_generate_v4() NOT NULL,
@@ -12,11 +12,11 @@ exports.up = (knex) => {
       course_id   CHARACTER VARYING(128) NOT NULL,
       created_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-      exercise    TEXT NOT NULL,
-      name        CHARACTER VARYING(64) NOT NULL,
-      description CHARACTER VARYING(64),
-      type        type NOT NULL,
-      difficulty  difficulty NOT NULL
+      problem_input   TEXT NOT NULL,
+      name            CHARACTER VARYING(64) NOT NULL,
+      description     CHARACTER VARYING(64),
+      type            type NOT NULL,
+      difficulty      difficulty NOT NULL
     );
 
     CREATE TABLE student_exercises(
@@ -24,8 +24,17 @@ exports.up = (knex) => {
       exercise_id  CHARACTER VARYING(64) NOT NULL,
       created_at   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
+      step_list    TEXT NOT NULL,
       state        exercise_state NOT NULL DEFAULT 'incompleted',
       calification INT DEFAULT NULL,
+      PRIMARY KEY (user_id, exercise_id)
+    );
+
+    CREATE TABLE exercise_error_count(
+      user_id       CHARACTER VARYING(64) NOT NULL,
+      exercise_id   CHARACTER VARYING(64) NOT NULL,
+
+      count         INT DEFAULT 0,
       PRIMARY KEY (user_id, exercise_id)
     );
   `;
@@ -37,6 +46,7 @@ exports.down = (knex) => {
   const query = `
     DROP TABLE exercises;
     DROP TABLE student_exercises;
+    DROP TABLE exercise_error_count;
     DROP TYPE type;
     DROP TYPE difficulty;
     DROP TYPE exercise_state;

@@ -1,3 +1,5 @@
+const createError = require('http-errors');
+const mathResolverClient = require('../clients/mathResolverClient');
 const exercisesDB = require('../databases/exercisesDb');
 
 /**
@@ -5,18 +7,28 @@ const exercisesDB = require('../databases/exercisesDb');
  *
  */
 const create = async ({
-  context,
-  guideId,
-  courseId,
-  exerciseMetadata
-}) => (
-  exercisesDB.createExercise({
+  context, guideId, courseId, exerciseMetadata
+}) => {
+  try {
+    await mathResolverClient.validate({
+      context,
+      problemInput: exerciseMetadata.problemInput,
+      type: exerciseMetadata.type
+    });
+  } catch (e) {
+    if (e.status === 400) {
+      throw createError(400, { message: 'invalid exercise' });
+    }
+    throw e;
+  }
+
+  return exercisesDB.createExercise({
     context,
     guideId,
     courseId,
     exerciseMetadata
-  })
-);
+  });
+};
 
 /**
  * List exercises.
@@ -44,15 +56,20 @@ const update = async ({
   courseId,
   exerciseId,
   exerciseMetadata
-}) => (
-  exercisesDB.updateExercise({
+}) => {
+  const exerciseMetadataToUpdate = _.clone(exerciseMetadata);
+  if (exerciseMetadata.stepList) {
+    exerciseMetadataToUpdate.stepList = JSON.stringify(exerciseMetadata.step);
+  }
+
+  return exercisesDB.updateExercise({
     context,
     guideId,
     courseId,
     exerciseId,
-    exerciseMetadata
-  })
-);
+    exerciseMetadata: exerciseMetadataToUpdate
+  });
+};
 
 /**
  * Remove exercise.
