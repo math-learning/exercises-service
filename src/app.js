@@ -62,7 +62,8 @@ app.use(errorMiddleware);
 
 //  Setting the invalid enpoint message for any other route
 app.get('*', (req, res) => {
-  res.status(400).json({ message: 'Invalid endpoint' });
+  res.status(400)
+    .json({ message: 'Invalid endpoint' });
 });
 
 //  Start server on port

@@ -35,7 +35,8 @@ const addUser = async (req, res) => {
     userId
   });
 
-  return res.status(201).send({});
+  return res.status(201)
+    .send({});
 };
 
 /**
@@ -53,7 +54,8 @@ const listExercises = async (req, res) => {
     guideId,
     courseId
   });
-  return res.status(200).json(exercises);
+  return res.status(200)
+    .json(exercises);
 };
 
 /**
@@ -73,7 +75,8 @@ const getExercise = async (req, res) => {
     courseId,
     exerciseId
   });
-  return res.status(200).json(exercise);
+  return res.status(200)
+    .json(exercise);
 };
 
 const updateExercise = async (req, res) => {
@@ -97,7 +100,8 @@ const updateExercise = async (req, res) => {
     exerciseId,
     exerciseMetadata
   });
-  return res.status(200).json(updatedExercise);
+  return res.status(200)
+    .json(updatedExercise);
 };
 
 module.exports = expressify({

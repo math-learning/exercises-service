@@ -1,0 +1,22 @@
+version: '3'
+services:
+  exercises-service:
+    container_name: "exercises-service"
+    ports:
+      - "127.0.0.1:9000:9000"
+    depends_on:
+      - exercises-db
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+
+  exercises-db:
+    build:
+      context: .
+      dockerfile: ./Dockerfile-db
+    container_name: "exercises-db"
+    volumes:
+      - exercises-dbdata:/var/lib/postgresql/data
+
+volumes:
+  exercises-dbdata:

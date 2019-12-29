@@ -78,7 +78,10 @@ const updateExercise = async ({
 }) => (
   knex('student_exercises')
     .update(snakelize(exerciseMetadata))
-    .where(snakelize({ userId, exerciseId }))
+    .where(snakelize({
+      userId,
+      exerciseId
+    }))
     .returning('*')
     .then(processDbResponse)
     .then((response) => {

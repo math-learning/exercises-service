@@ -7,14 +7,14 @@ const usersClient = require('../clients/usersClient');
  *
  */
 module.exports = async (req, res, next) => {
-  const { context } = req;
+  const { accessToken } = req.context;
 
-  if (!context.accessToken) {
+  if (!accessToken) {
     next(createError.BadRequest('Authorization has not been provided'));
   }
 
   try {
-    const user = await usersClient.authenticate({ context });
+    const user = await usersClient.authenticate({ context: req.context });
     req.context.user = user;
     next();
   } catch (err) {

@@ -3,9 +3,10 @@ const _ = require('lodash');
 const camilize = (obj) => {
   const newObj = {};
 
-  Object.keys(obj).forEach((key) => {
-    newObj[_.camelCase(key)] = obj[key];
-  });
+  Object.keys(obj)
+    .forEach((key) => {
+      newObj[_.camelCase(key)] = obj[key];
+    });
 
   return newObj;
 };
@@ -13,11 +14,12 @@ const camilize = (obj) => {
 const snakelize = (obj) => {
   const newObj = {};
 
-  Object.keys(obj).forEach((key) => {
-    if (obj[key]) { // to prevent null objects are inserted
-      newObj[_.snakeCase(key)] = obj[key];
-    }
-  });
+  Object.keys(obj)
+    .forEach((key) => {
+      if (obj[key]) { // to prevent null objects are inserted
+        newObj[_.snakeCase(key)] = obj[key];
+      }
+    });
 
   return newObj;
 };

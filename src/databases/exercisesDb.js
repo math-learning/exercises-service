@@ -31,7 +31,10 @@ const listExercises = async ({ courseId, guideId }) => {
 
   return knex('exercises')
     .select('*')
-    .where(snakelize({ courseId, guideId }))
+    .where(snakelize({
+      courseId,
+      guideId
+    }))
     .orderBy('created_at')
     .then(processDbResponse);
 };
@@ -69,7 +72,11 @@ const removeExercise = async ({ courseId, guideId, exerciseId }) => {
   const trx = await knex.transaction();
   await trx.delete()
     .from('exercises')
-    .where(snakelize({ courseId, guideId, exerciseId }));
+    .where(snakelize({
+      courseId,
+      guideId,
+      exerciseId
+    }));
 
   await trx.delete()
     .from('student_exercises')
