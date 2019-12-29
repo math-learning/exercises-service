@@ -18,7 +18,7 @@ const resolve = async ({
   });
   const { user: { userId } } = context;
   const { problemInput, type, stepList } = currentExercise;
-  const { currentExpression } = exercise; // TODO: currentExpression is not necessary if we have the whole stepList
+  const { currentExpression } = exercise;
 
   const resolveResult = await mathResolverClient.resolve({
     context, type, problemInput, stepList, currentExpression
@@ -89,7 +89,6 @@ const askHelp = async ({
 
   return mathResolverClient.askHelp({ context, type, problemInput, stepList });
 };
-
 
 module.exports = {
   askHelp,

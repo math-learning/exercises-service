@@ -7,9 +7,9 @@ exports.seed = async (knex) => {
   const lucas = {
     user_id: '111975156652135962164'
   };
-  // const diego = {
-  //   user_id: 'diego-id'
-  // };
+  const diego = {
+    user_id: '117307029770597899245'
+  };
   // const mendez = {
   //   user_id: 'mendez-id'
   // };
@@ -26,7 +26,7 @@ exports.seed = async (knex) => {
   // };
 
   const exercises = [{
-    course_id: 'course',
+    course_id: 'analisis-matematico-infinito-curso-2',
     guide_id: 'guide',
     exercise_id: 'ex',
     problem_input: '1/2 + 4 * x dx',
@@ -44,6 +44,13 @@ exports.seed = async (knex) => {
     state: 'incompleted',
     calification: null,
     created_at: '2019-11-16T20:55:28.423Z'
+  }, {
+    ...diego,
+    exercise_id: 'ex',
+    step_list: JSON.stringify([]),
+    state: 'incompleted',
+    calification: null,
+    created_at: '2019-11-16T20:55:28.423Z'
   }];
 
   if (!currentExercises.length) {
@@ -52,20 +59,4 @@ exports.seed = async (knex) => {
   if (!currentStudentExercises.length) {
     await knex('student_exercises').insert(userExercises);
   }
-
-
-
-
-    // return {
-  //   guideId: 'guide',
-  //   courseId: 'course',
-  //   exerciseId: 'ex',
-  //   exercise: '1/2 + 4 * x dx',
-  //   name: 'derivada',
-  //   description: 'calcula la derivada',
-  //   type: 'derivative',
-  //   difficulty: 'easy',
-  //   state: 'incompleted',
-  //   calification: null
-  // };
 };

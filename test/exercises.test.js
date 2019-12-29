@@ -34,14 +34,14 @@ describe('Integration exercises tests', () => {
     };
 
     derivativeEx = {
-      exercise: 'dx',
+      problemInput: 'dx',
       name: 'derivada',
       description: 'calcula la derivada',
       type: 'derivative',
       difficulty: 'easy'
     };
     integrateEx = {
-      exercise: 'int',
+      problemInput: 'int',
       name: 'integrala',
       description: 'calcula la integrate',
       type: 'integral',
@@ -68,6 +68,9 @@ describe('Integration exercises tests', () => {
     before(async () => {
       mocks.mockAuth({ profile: professorProfile });
       mocks.mockGetCourse({ courseId, guideId, course });
+      mocks.mockValidateExercise({
+        courseId, guideId, ...derivativeEx
+      });
 
       createExerciseResponse = await requests.createExercise({
         exercise: derivativeEx, courseId, guideId, token
@@ -113,7 +116,7 @@ describe('Integration exercises tests', () => {
       mocks.mockAuth({ profile: professorProfile });
       mocks.mockGetCourse({ courseId, guideId, course });
       exercise = {
-        exercise: 'dx',
+        problemInput: 'dx',
         description: 'calcula la derivada',
         type: 'derivative',
         difficulty: 'easy'
@@ -125,7 +128,7 @@ describe('Integration exercises tests', () => {
     });
 
     it('status is bad request', () => assert.equal(errorResponse.status, 400));
-    it('message describes the error', () => assert.equal(errorResponse.body.message, 'exercise, name, type or difficulty have not been provided'));
+    it('message describes the error', () => assert.equal(errorResponse.body.message, 'problemInput, name, type or difficulty have not been provided'));
   });
 
   describe('Error: when the course does not exist', () => {
@@ -189,6 +192,9 @@ describe('Integration exercises tests', () => {
     before(async () => {
       mocks.mockAuth({ profile: professorProfile });
       mocks.mockGetCourse({ courseId, guideId, course });
+      mocks.mockValidateExercise({
+        courseId, guideId, ...integrateEx
+      });
 
       createExerciseResponse = await requests.createExercise({
         exercise: integrateEx, courseId, guideId, token

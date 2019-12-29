@@ -5,15 +5,8 @@ const configs = require('../config')();
 
 const coursesServiceUrl = url.format(configs.services.coursesService.url);
 
-const getCourse = async ({ context, params }) => {
-  const { courseId, guideId } = params;
-
-  let coursePath;
-  if (guideId) {
-    coursePath = configs.services.coursesService.paths.guide({ courseId, guideId });
-  } else {
-    coursePath = configs.services.coursesService.paths.course({ courseId });
-  }
+const getCourse = async ({ context, courseId }) => {
+  const coursePath = configs.services.coursesService.paths.course({ courseId });
 
   const path = `${coursesServiceUrl}${coursePath}`;
 

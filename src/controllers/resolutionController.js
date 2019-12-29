@@ -4,11 +4,11 @@ const expressify = require('expressify')();
 const resolutionService = require('../services/resolutionService');
 
 const extractExercise = (body) => (
-  _.pick(body, ['stepList', 'problemInput', 'currentExpression'])
+  _.pick(body, ['currentExpression'])
 );
 
 const validateBody = (body) => {
-  if (!body.stepList && !body.problemInput && !body.currentExpression) {
+  if (!body.currentExpression) {
     throw createError.BadRequest('Missing params');
   }
 };

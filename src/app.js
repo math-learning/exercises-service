@@ -49,12 +49,12 @@ router.delete('/courses/:courseId/guides/:guideId/exercises/:exerciseId', course
 // User Exercises
 router.get('/courses/:courseId/guides/:guideId/user/exercises', courseValidatorMiddleware, usersController.listExercises);
 router.get('/courses/:courseId/guides/:guideId/user/exercises/:exerciseId', courseValidatorMiddleware, usersController.getExercise);
-router.put('/courses/:courseId/guides/:guideId/user/exercises/:exerciseId', courseValidatorMiddleware, usersController.updateExercise); // TODO: should be patch. but cors doesnt allow it
+router.put('/courses/:courseId/guides/:guideId/user/exercises/:exerciseId', courseValidatorMiddleware, usersController.updateExercise);
 
 // Resolution
-router.delete('/courses/:courseId/guides/:guideId/exercises/:exerciseId/step', resolutionController.removeStep);
-router.post('/courses/:courseId/guides/:guideId/exercises/:exerciseId/resolve', resolutionController.resolve); // TODO: /step ?
-router.post('/courses/:courseId/guides/:guideId/exercises/:exerciseId/help', resolutionController.askHelp);
+router.delete('/courses/:courseId/guides/:guideId/exercises/:exerciseId/step', courseValidatorMiddleware, resolutionController.removeStep);
+router.post('/courses/:courseId/guides/:guideId/exercises/:exerciseId/resolve', courseValidatorMiddleware, resolutionController.resolve);
+// router.post('/courses/:courseId/guides/:guideId/exercises/:exerciseId/help', resolutionController.askHelp);
 
 app.use(router);
 

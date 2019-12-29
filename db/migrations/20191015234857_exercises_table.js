@@ -24,7 +24,7 @@ exports.up = (knex) => {
       exercise_id  CHARACTER VARYING(64) NOT NULL,
       created_at   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-      step_list    TEXT NOT NULL,
+      step_list    TEXT NOT NULL DEFAULT '"[]"',
       state        exercise_state NOT NULL DEFAULT 'incompleted',
       calification INT DEFAULT NULL,
       PRIMARY KEY (user_id, exercise_id)

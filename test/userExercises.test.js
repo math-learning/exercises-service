@@ -60,19 +60,22 @@ describe('Integration user exercises tests', () => {
       });
 
       derivativeExercise = {
-        exercise: 'dx',
+        problemInput: 'dx',
         name: 'derivada',
         description: 'calcula la derivada',
         type: 'derivative',
         difficulty: 'easy'
       };
       integrateExercise = {
-        exercise: 'dx',
+        problemInput: 'dx',
         name: 'integrate',
         description: 'calcula la integral',
         type: 'integral',
         difficulty: 'easy'
       };
+      mocks.mockValidateExercise({ courseId, guideId, ...derivativeExercise });
+      mocks.mockValidateExercise({ courseId, guideId, ...integrateExercise });
+
       derivResponse = await requests.createExercise({
         exercise: derivativeExercise, courseId, guideId, token
       });
@@ -172,7 +175,8 @@ describe('Integration user exercises tests', () => {
         courseId,
         exerciseId: derivativeExerciseId,
         state: 'incompleted',
-        calification: null
+        calification: null,
+        stepList: []
       };
     });
 
@@ -244,7 +248,8 @@ describe('Integration user exercises tests', () => {
         courseId,
         exerciseId: derivativeExerciseId,
         state: 'incompleted',
-        calification: 10
+        calification: 10,
+        stepList: []
       };
     });
 

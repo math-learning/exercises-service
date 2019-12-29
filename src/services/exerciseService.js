@@ -56,20 +56,15 @@ const update = async ({
   courseId,
   exerciseId,
   exerciseMetadata
-}) => {
-  const exerciseMetadataToUpdate = _.clone(exerciseMetadata);
-  if (exerciseMetadata.stepList) {
-    exerciseMetadataToUpdate.stepList = JSON.stringify(exerciseMetadata.step);
-  }
-
-  return exercisesDB.updateExercise({
+}) => (
+  exercisesDB.updateExercise({
     context,
     guideId,
     courseId,
     exerciseId,
-    exerciseMetadata: exerciseMetadataToUpdate
-  });
-};
+    exerciseMetadata
+  })
+);
 
 /**
  * Remove exercise.

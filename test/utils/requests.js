@@ -128,7 +128,7 @@ const updateUserExercise = async ({
   const updateExUrl = `${baseUrl}/courses/${courseId}/guides/${guideId}/user/exercises/${exerciseId}`;
 
   const response = await fetch(`${updateExUrl}?userId=${userId}`, {
-    method: 'patch',
+    method: 'put',
     body: JSON.stringify(exerciseMetadata),
     headers: {
       authorization: token,
@@ -137,6 +137,45 @@ const updateUserExercise = async ({
   });
   return { status: response.status, body: await response.json() };
 };
+
+const resolveExercise = async ({
+  token,
+  courseId,
+  guideId,
+  exerciseId,
+  currentExpression
+}) => {
+  const updateExUrl = `${baseUrl}/courses/${courseId}/guides/${guideId}/exercises/${exerciseId}/resolve`;
+
+  const response = await fetch(`${updateExUrl}`, {
+    method: 'post',
+    body: JSON.stringify({ currentExpression }),
+    headers: {
+      authorization: token,
+      'Content-Type': 'application/json'
+    }
+  });
+  return { status: response.status, body: await response.json() };
+};
+
+const deleteExerciseStep = async ({
+  token,
+  courseId,
+  guideId,
+  exerciseId
+}) => {
+  const updateExUrl = `${baseUrl}/courses/${courseId}/guides/${guideId}/exercises/${exerciseId}/step`;
+
+  const response = await fetch(`${updateExUrl}`, {
+    method: 'delete',
+    headers: {
+      authorization: token,
+      'Content-Type': 'application/json'
+    }
+  });
+  return { status: response.status };
+};
+
 
 function errorWrapper(funct) {
   return function inner(...args) {
@@ -157,5 +196,7 @@ module.exports = {
   getUserExercise: errorWrapper(getUserExercise),
   listUserExercises: errorWrapper(listUserExercises),
   updateUserExercise: errorWrapper(updateUserExercise),
+  deleteExerciseStep: errorWrapper(deleteExerciseStep),
+  resolveExercise: errorWrapper(resolveExercise),
   status
 };

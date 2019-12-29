@@ -13,13 +13,14 @@ const listExercises = async ({
   guideId,
   courseId
 }) => (
-  knex('student_exercises')
-    .select()
-    .innerJoin('exercises', function innerJoinFn() {
-      this.on('student_exercises.exercise_id', 'exercises.exercise_id');
+  knex.queryBuilder()
+    .select('state', 'user_id', 'calification', 'ex.*')
+    .from('student_exercises as se')
+    .innerJoin('exercises as ex', function innerJoinFn() {
+      this.on('se.exercise_id', 'ex.exercise_id');
     })
     .where(snakelize({ userId, guideId, courseId }))
-    .orderBy('exercises.created_at')
+    .orderBy('ex.created_at')
     .then(processDbResponse)
 );
 
