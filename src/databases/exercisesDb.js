@@ -40,6 +40,26 @@ const listExercises = async ({ courseId, guideId }) => {
 };
 
 /**
+ * List exercises by ids
+ *
+ */
+const listExercisesByIds = async ({ courseId, guideId, exerciseIds }) => {
+  if (!courseId && !guideId) {
+    throw new Error('at least courseId or guideId should be defined');
+  }
+
+  return knex('exercises')
+    .select('*')
+    .where(snakelize({
+      courseId,
+      guideId
+    }))
+    .whereIn('exercise_id', exerciseIds)
+    .orderBy('created_at')
+    .then(processDbResponse);
+};
+
+/**
  * Update exercise.
  *
  */
@@ -87,6 +107,7 @@ const removeExercise = async ({ courseId, guideId, exerciseId }) => {
 
 module.exports = {
   createExercise,
+  listExercisesByIds,
   listExercises,
   removeExercise,
   updateExercise

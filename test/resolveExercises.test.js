@@ -9,6 +9,8 @@ describe('Integration resolve exercises tests', () => {
   let courseId;
   let guideId;
   let course;
+  let newName;
+  let newProblemInput;
   let studentProfile;
   let professorProfile;
 
@@ -25,13 +27,10 @@ describe('Integration resolve exercises tests', () => {
     guideId = 'guideId';
     userId = 'student';
     token = 'token';
+    newName = 'new name';
+    newProblemInput = '2x + 1';
     firstExpression = '2x';
     secondExpression = '2';
-    course = {
-      name: 'curso',
-      description: 'description',
-      courseId
-    };
     studentProfile = {
       userId: 'student',
       name: 'pedro',
@@ -43,6 +42,13 @@ describe('Integration resolve exercises tests', () => {
       name: 'licha',
       email: 'licha@gmail',
       rol: 'professor'
+    };
+    course = {
+      name: 'curso',
+      description: 'description',
+      courseId,
+      professors: [professorProfile],
+      users: [professorProfile, studentProfile]
     };
   });
 
@@ -62,7 +68,7 @@ describe('Integration resolve exercises tests', () => {
       };
 
       mocks.mockAuth({ profile: professorProfile });
-      mocks.mockGetCourse({ courseId, guideId, course });
+      mocks.mockGetCourse({ courseId, course });
       mocks.mockValidateExercise({ courseId, guideId, ...derivativeExercise });
 
       derivResponse = await requests.createExercise({
@@ -88,7 +94,7 @@ describe('Integration resolve exercises tests', () => {
   describe('Resolving the exercise (status invalid)', () => {
     before(async () => {
       mocks.mockAuth({ profile: studentProfile });
-      mocks.mockGetCourse({ courseId, guideId, course });
+      mocks.mockGetCourse({ courseId, course });
       mocks.mockResolveExercise({
         type: derivativeExercise.type,
         problemInput: derivativeExercise.problemInput,
@@ -116,7 +122,7 @@ describe('Integration resolve exercises tests', () => {
   describe('Resolving the exercise (status valid)', () => {
     before(async () => {
       mocks.mockAuth({ profile: studentProfile });
-      mocks.mockGetCourse({ courseId, guideId, course });
+      mocks.mockGetCourse({ courseId, course });
       mocks.mockResolveExercise({
         type: derivativeExercise.type,
         problemInput: derivativeExercise.problemInput,
@@ -159,7 +165,7 @@ describe('Integration resolve exercises tests', () => {
 
     before(async () => {
       mocks.mockAuth({ profile: studentProfile });
-      mocks.mockGetCourse({ courseId, guideId, course });
+      mocks.mockGetCourse({ courseId, course });
 
       response = await requests.getUserExercise({
         exerciseId: derivativeExerciseId,
@@ -179,7 +185,7 @@ describe('Integration resolve exercises tests', () => {
   describe('Resolving the exercise (status resolved)', () => {
     before(async () => {
       mocks.mockAuth({ profile: studentProfile });
-      mocks.mockGetCourse({ courseId, guideId, course });
+      mocks.mockGetCourse({ courseId, course });
       mocks.mockResolveExercise({
         type: derivativeExercise.type,
         problemInput: derivativeExercise.problemInput,
@@ -222,7 +228,7 @@ describe('Integration resolve exercises tests', () => {
 
     before(async () => {
       mocks.mockAuth({ profile: studentProfile });
-      mocks.mockGetCourse({ courseId, guideId, course });
+      mocks.mockGetCourse({ courseId, course });
 
       response = await requests.getUserExercise({
         exerciseId: derivativeExerciseId,
@@ -242,7 +248,7 @@ describe('Integration resolve exercises tests', () => {
   describe('Removing a step from the exercise', () => {
     before(async () => {
       mocks.mockAuth({ profile: studentProfile });
-      mocks.mockGetCourse({ courseId, guideId, course });
+      mocks.mockGetCourse({ courseId, course });
 
       response = await requests.deleteExerciseStep({
         exerciseId: derivativeExerciseId,
@@ -273,7 +279,132 @@ describe('Integration resolve exercises tests', () => {
 
     before(async () => {
       mocks.mockAuth({ profile: studentProfile });
-      mocks.mockGetCourse({ courseId, guideId, course });
+      mocks.mockGetCourse({ courseId, course });
+
+      response = await requests.getUserExercise({
+        exerciseId: derivativeExerciseId,
+        courseId,
+        guideId,
+        token
+      });
+    });
+
+    it('status is OK', () => assert.equal(response.status, 200));
+
+    it('should retrieve the asked exercise (without the last step)', () => {
+      assert.deepEqual(sanitizeResponse(response.body), expectedUserExercise);
+    });
+  });
+
+  describe('Updating name (by the professor) (should not reset the resolutions)', () => {
+    let updateExerciseResponse;
+    let updatedExercise;
+
+    before(async () => {
+      updatedExercise = {
+        name: newName
+      };
+    });
+
+    before(async () => {
+      mocks.mockAuth({ profile: professorProfile });
+      mocks.mockGetCourse({ courseId, course });
+
+      updateExerciseResponse = await requests.updateExercise({
+        exercise: updatedExercise,
+        courseId,
+        guideId,
+        exerciseId: derivativeExerciseId,
+        token
+      });
+    });
+
+    it('status is OK', () => assert.equal(updateExerciseResponse.status, 201));
+  });
+
+  describe('Asking the exercise (should not has been restored)', () => {
+    let expectedUserExercise;
+
+    before(async () => {
+      expectedUserExercise = {
+        ...derivativeExercise,
+        userId,
+        guideId,
+        courseId,
+        exerciseId: derivativeExerciseId,
+        name: newName,
+        state: 'incompleted',
+        calification: null,
+        stepList: [firstExpression]
+      };
+    });
+
+    before(async () => {
+      mocks.mockAuth({ profile: studentProfile });
+      mocks.mockGetCourse({ courseId, course });
+
+      response = await requests.getUserExercise({
+        exerciseId: derivativeExerciseId,
+        courseId,
+        guideId,
+        token
+      });
+    });
+
+    it('status is OK', () => assert.equal(response.status, 200));
+
+    it('should retrieve the asked exercise (without the last step)', () => {
+      assert.deepEqual(sanitizeResponse(response.body), expectedUserExercise);
+    });
+  });
+
+  describe('Updating problemInput (by the professor) (should reset the resolutions)', () => {
+    let updateExerciseResponse;
+    let updatedExercise;
+
+    before(async () => {
+      updatedExercise = {
+        problemInput: newProblemInput
+      };
+    });
+
+    before(async () => {
+      mocks.mockAuth({ profile: professorProfile });
+      mocks.mockGetCourse({ courseId, course });
+
+      updateExerciseResponse = await requests.updateExercise({
+        exercise: updatedExercise,
+        courseId,
+        guideId,
+        exerciseId: derivativeExerciseId,
+        token
+      });
+    });
+
+    it('status is OK', () => assert.equal(updateExerciseResponse.status, 201));
+  });
+
+  describe('Asking the exercise (should has been restored)', () => {
+    let expectedUserExercise;
+
+    before(async () => {
+      expectedUserExercise = {
+        ...derivativeExercise,
+        userId,
+        guideId,
+        courseId,
+        exerciseId: derivativeExerciseId,
+        name: newName,
+        problemInput: newProblemInput,
+        state: 'incompleted',
+        calification: null,
+        stepList: []
+      };
+    });
+
+    before(async () => {
+      mocks.mockAuth({ profile: studentProfile });
+      mocks.mockGetCourse({ courseId, course });
 
       response = await requests.getUserExercise({
         exerciseId: derivativeExerciseId,

@@ -42,8 +42,8 @@ const create = async (req, res) => {
     courseId,
     exerciseMetadata
   });
-  return res.status(201)
-    .json(createdExercise);
+
+  return res.status(201).json(createdExercise);
 };
 
 /**
@@ -61,8 +61,8 @@ const list = async (req, res) => {
     guideId,
     courseId
   });
-  return res.status(200)
-    .json(exercises);
+
+  return res.status(200).json(exercises);
 };
 
 /**
@@ -90,8 +90,8 @@ const update = async (req, res) => {
     exerciseId,
     exerciseMetadata
   });
-  return res.status(201)
-    .json(updatedExercise);
+
+  return res.status(201).json(updatedExercise);
 };
 
 /**
@@ -112,8 +112,7 @@ const remove = async (req, res) => {
     exerciseId
   });
 
-  return res.status(204)
-    .json({});
+  return res.status(204).json({});
 };
 
 module.exports = expressify({

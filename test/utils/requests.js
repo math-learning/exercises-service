@@ -33,7 +33,7 @@ const updateExercise = async ({
   const createExUrl = `${baseUrl}/courses/${courseId}/guides/${guideId}/exercises/${exerciseId}`;
 
   const response = await fetch(createExUrl, {
-    method: 'patch',
+    method: 'put',
     body: JSON.stringify(exercise),
     headers: {
       authorization: token,

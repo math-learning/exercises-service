@@ -1,6 +1,7 @@
 const createError = require('http-errors');
 const mathResolverClient = require('../clients/mathResolverClient');
 const exercisesDB = require('../databases/exercisesDb');
+const usersService = require('../services/usersService');
 
 /**
  * Create exercise.
@@ -22,12 +23,26 @@ const create = async ({
     throw e;
   }
 
-  return exercisesDB.createExercise({
+  // adding exercise template
+  const createdExercise = await exercisesDB.createExercise({
     context,
     guideId,
     courseId,
     exerciseMetadata
   });
+
+  // adding exercise to existing professors
+  const { course } = context;
+  const professorIds = course.professors.map((professor) => professor.userId);
+  await usersService.addingExercisesToUsers({
+    context,
+    guideId,
+    courseId,
+    userIds: professorIds,
+    exerciseIds: [createdExercise.exerciseId]
+  });
+
+  return createdExercise;
 };
 
 /**
@@ -56,15 +71,23 @@ const update = async ({
   courseId,
   exerciseId,
   exerciseMetadata
-}) => (
-  exercisesDB.updateExercise({
+}) => {
+  // update the exercise template
+  const updatedExercise = await exercisesDB.updateExercise({
     context,
     guideId,
     courseId,
     exerciseId,
     exerciseMetadata
-  })
-);
+  });
+
+  if (exerciseMetadata.problemInput || exerciseMetadata.type) {
+    // restore the exercise resolutions of the users
+    await usersService.restoreExercise({ context, courseId, guideId, exerciseId });
+  }
+
+  return updatedExercise;
+};
 
 /**
  * Remove exercise.

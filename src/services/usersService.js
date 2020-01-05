@@ -13,6 +13,7 @@ const addUser = async ({
 }) => {
   const currentUserExercises = await userExercisesDB.listExercises({
     context,
+    courseId,
     userId
   });
 
@@ -28,6 +29,41 @@ const addUser = async ({
     stepList: JSON.stringify([]),
     userId
   }));
+
+  return userExercisesDB.insertExercises({
+    context,
+    userExercises
+  });
+};
+
+/**
+ * Adding exercises to user ids.
+ *
+ */
+const addingExercisesToUsers = async ({
+  context,
+  courseId,
+  exerciseIds,
+  userIds
+}) => {
+  const exercises = await exercisesDB.listExercisesByIds({
+    context,
+    courseId,
+    exerciseIds
+  });
+
+  const userExercises = userIds.reduce((acum, userId) => {
+    const exercisesToInsert = exercises.map((exercise) => ({
+      exerciseId: exercise.exerciseId,
+      stepList: JSON.stringify([]),
+      userId
+    }));
+
+    return [
+      ...acum,
+      ...exercisesToInsert
+    ];
+  }, []);
 
   return userExercisesDB.insertExercises({
     context,
@@ -78,6 +114,28 @@ const getExercise = async ({
   return exercise;
 };
 
+/**
+ * Restore exercise for each user
+ *
+ */
+const restoreExercise = async ({
+  context,
+  guideId,
+  courseId,
+  exerciseId
+}) => (
+  userExercisesDB.restoreExercise({
+    context,
+    guideId,
+    courseId,
+    exerciseId
+  })
+);
+
+/**
+ * Update user exercise
+ *
+ */
 const updateExercise = async ({
   context,
   userId,
@@ -98,7 +156,9 @@ const updateExercise = async ({
 
 module.exports = {
   addUser,
+  addingExercisesToUsers,
   getExercise,
   listExercises,
+  restoreExercise,
   updateExercise
 };

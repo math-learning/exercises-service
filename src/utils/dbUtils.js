@@ -21,6 +21,10 @@ const snakelize = (obj) => {
       }
     });
 
+  if (Object.keys(newObj).lenght === 0) {
+    throw new Error('Can not snakelize empty objects');
+  }
+
   return newObj;
 };
 

@@ -4,6 +4,12 @@ const { processDbResponse, snakelize } = require('../utils/dbUtils');
 const configs = require('../config')();
 const knex = require('knex')(configs.db); // eslint-disable-line
 
+const DEFAULT_METADATA = {
+  stepList: JSON.stringify([]),
+  state: 'incompleted',
+  calification: null
+};
+
 /**
  * Get user exercises.
  *
@@ -92,9 +98,23 @@ const updateExercise = async ({
     })
 );
 
+/**
+ * Restore exercise resolution
+ *
+ */
+// TODO: deberia ser courseId, guideId tambien. (agregarlo en la tabla)
+const restoreExercise = async ({ exerciseId }) => (
+  knex('student_exercises')
+    .update(snakelize(DEFAULT_METADATA))
+    .where(snakelize({ exerciseId }))
+    .then(processDbResponse)
+);
+
+
 module.exports = {
   getExercise,
   insertExercises,
   listExercises,
+  restoreExercise,
   updateExercise
 };

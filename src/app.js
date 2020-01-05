@@ -43,7 +43,7 @@ router.post('/courses/:courseId/users', courseValidatorMiddleware, usersControll
 // TODO: validar que es el profesor del curso el que ejecuta estas acciones
 router.post('/courses/:courseId/guides/:guideId/exercises', courseValidatorMiddleware, exerciseController.create);
 router.get('/courses/:courseId/guides/:guideId/exercises', courseValidatorMiddleware, exerciseController.list);
-router.patch('/courses/:courseId/guides/:guideId/exercises/:exerciseId', courseValidatorMiddleware, exerciseController.update);
+router.put('/courses/:courseId/guides/:guideId/exercises/:exerciseId', courseValidatorMiddleware, exerciseController.update);
 router.delete('/courses/:courseId/guides/:guideId/exercises/:exerciseId', courseValidatorMiddleware, exerciseController.remove);
 
 // User Exercises
