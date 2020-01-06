@@ -10,51 +10,270 @@ exports.seed = async (knex) => {
   const diego = {
     user_id: '117307029770597899245'
   };
-  // const mendez = {
-  //   user_id: 'mendez-id'
-  // };
-  // const juanma = {
-  //   user_id: 'juanma-id'
-  // };
+  const mendez = {
+    user_id: 'mendez-id'
+  };
+  const grymberg = {
+    user_id: 'grymberg-id'
+  };
+  const juanma = {
+    user_id: 'juanma-id'
+  };
 
   // Students in users service
-  // const licha = {
-  //   user_id: 'licha-id'
-  // };
-  // const pillud = {
-  //   user_id: 'pillud-id'
-  // };
+  const licha = {
+    user_id: 'licha-id'
+  };
+  const pillud = {
+    user_id: 'pillud-id'
+  };
+  const milito = {
+    user_id: 'milito-id'
+  };
+  const diaz = {
+    user_id: 'diaz-id'
+  };
 
-  const exercises = [{
-    course_id: 'analisis-matematico-infinito-curso-2',
-    guide_id: 'guide',
-    exercise_id: 'ex',
-    problem_input: '1/2 + 4 * x dx',
-    name: 'derivada',
-    description: 'calcula la derivada',
-    type: 'derivative',
-    difficulty: 'easy',
-    created_at: '2019-11-16T20:55:28.423Z'
+  // Users of courses
+  const usersOfAMII = [{
+    ...diego,
+    course_id: 'analisis-matematico-ii-curso-2',
+    role: 'creator'
+  }, {
+    ...lucas,
+    course_id: 'analisis-matematico-ii-curso-2',
+    role: 'professor'
   }];
 
-  const userExercises = [{
+  const usersOfAMInf = [{
     ...lucas,
-    exercise_id: 'ex',
-    step_list: JSON.stringify([]),
-    state: 'incompleted',
-    calification: null,
-    created_at: '2019-11-16T20:55:28.423Z'
+    course_id: 'analisis-matematico-infinito-curso-2',
+    role: 'creator'
   }, {
     ...diego,
-    exercise_id: 'ex',
-    step_list: JSON.stringify([]),
-    state: 'incompleted',
-    calification: null,
-    created_at: '2019-11-16T20:55:28.423Z'
+    course_id: 'analisis-matematico-infinito-curso-2',
+    role: 'professor'
+  }, {
+    ...juanma,
+    course_id: 'analisis-matematico-infinito-curso-2',
+    role: 'professor'
+  }, {
+    ...mendez,
+    course_id: 'analisis-matematico-infinito-curso-2',
+    role: 'professor'
+  }, {
+    ...pillud,
+    course_id: 'analisis-matematico-ii-curso-2',
+    role: 'student'
+  }, {
+    ...licha,
+    course_id: 'analisis-matematico-ii-curso-2',
+    role: 'student'
+  }, {
+    ...milito,
+    course_id: 'analisis-matematico-ii-curso-2',
+    role: 'student'
+  }, {
+    ...diaz,
+    course_id: 'analisis-matematico-ii-curso-2',
+    role: 'student'
   }];
 
+  const usersOfAlgoII = [{
+    ...mendez,
+    course_id: 'algo-ii-curso-2',
+    role: 'creator'
+  }, {
+    ...juanma,
+    course_id: 'algo-ii-curso-2',
+    role: 'student'
+  }, {
+    ...lucas,
+    course_id: 'algo-ii-curso-2',
+    role: 'student'
+  }, {
+    ...diego,
+    course_id: 'algo-ii-curso-2',
+    role: 'student'
+  }];
+
+  const usersOfAlgeII = [{
+    ...juanma,
+    course_id: 'algebra-ii-curso-2',
+    role: 'creator'
+  }, {
+    ...lucas,
+    course_id: 'algebra-ii-curso-2',
+    role: 'student'
+  }, {
+    ...diego,
+    course_id: 'algebra-ii-curso-2',
+    role: 'student'
+  }];
+
+  const usersOfProba = [{
+    ...grymberg,
+    course_id: 'proba-1',
+    role: 'creator'
+  }, {
+    ...lucas,
+    course_id: 'proba-1',
+    role: 'student'
+  }, {
+    ...diego,
+    course_id: 'proba-1',
+    role: 'student'
+  }, {
+    ...mendez,
+    course_id: 'proba-1',
+    role: 'student'
+  }];
+
+  const usersOfGreatCourses = [
+    ...usersOfAMII,
+    ...usersOfAMInf,
+    ...usersOfAlgeII,
+    ...usersOfAlgoII,
+    ...usersOfProba
+  ];
+
+  const idsOfDefaultCourses = ['alg-III', 'alg-IV', 'fisica-cuantica', 'am-easy', 'am-easy-ii', 'am-medium'];
+  const usersOfDefaultCourses = idsOfDefaultCourses.reduce((acum, courseId) => {
+    const defaultUsers = [{
+      ...mendez,
+      course_id: courseId,
+      role: 'creator'
+    }, {
+      ...grymberg,
+      course_id: courseId,
+      role: 'professor'
+    }];
+
+    return [
+      ...acum,
+      ...defaultUsers
+    ];
+  }, []);
+
+
+  // Exercise Templates
+  const derivativeExercises = [{
+    guide_id: 'derivadas',
+    exercise_id: 'derivative-i',
+    problem_input: '(1/2 + 4 * x) dx',
+    name: 'Derivada ejercicio 1',
+    description: 'calcula la derivada por pasos',
+    type: 'derivative',
+    difficulty: 'easy'
+  }, {
+    guide_id: 'derivadas',
+    exercise_id: 'derivative-ii',
+    problem_input: '((10 * 5x) / 2) dx',
+    name: 'Derivada ejercicio 2',
+    description: 'calcula la derivada por pasos',
+    type: 'derivative',
+    difficulty: 'normal' // TODO: change to medium
+  }, {
+    guide_id: 'derivadas',
+    exercise_id: 'derivative-iii',
+    problem_input: '(2x + 1) dx',
+    name: 'Derivada ejercicio 2',
+    description: 'calcula la derivada por pasos',
+    type: 'derivative',
+    difficulty: 'hard'
+  }];
+
+  const integralExercises = [{
+    guide_id: 'integrales',
+    exercise_id: 'integral-i',
+    problem_input: '(8x ** x) dx',
+    name: 'Derivada ejercicio 1',
+    description: 'calcula la derivada por pasos',
+    type: 'integral',
+    difficulty: 'easy'
+  }, {
+    guide_id: 'integrales',
+    exercise_id: 'integral-ii',
+    problem_input: '(10 + 12 * x) dx',
+    name: 'Derivada ejercicio 2',
+    description: 'calcula la integral por pasos',
+    type: 'integral',
+    difficulty: 'normal'
+  }, {
+    guide_id: 'integrales',
+    exercise_id: 'integral-iii',
+    problem_input: '(2 * x + 10) dx',
+    name: 'Derivada ejercicio 2',
+    description: 'calcula la integral por pasos',
+    type: 'integral',
+    difficulty: 'hard'
+  }];
+
+  const exercisesModels = [...derivativeExercises, ...integralExercises];
+
+
+  // Great courses
+  const idsOfGreatCourse = ['analisis-matematico-ii-curso-2', 'analisis-matematico-infinito-curso-2', 'algo-ii-curso-2', 'proba-1', 'algebra-ii-curso-2'];
+  const exercisesOfGreatCourses = idsOfGreatCourse.reduce((acum, course_id) => (
+    [
+      ...acum,
+      ...exercisesModels.map((ex) => ({ ...ex, course_id }))
+    ]
+  ), []);
+
+  const greatUserExercises = usersOfGreatCourses.reduce((acum, user) => {
+    return [
+      ...acum,
+      ...exercisesModels.map((ex) => ({
+        user_id: user.user_id,
+        course_id: user.course_id,
+        guide_id: ex.guide_id,
+        exercise_id: ex.exercise_id,
+        step_list: JSON.stringify([]),
+        state: 'incompleted',
+        calification: null
+      }))
+    ];
+  }, []);
+
+
+  // Default courses
+  const exercisesOfDefaultCourses = idsOfDefaultCourses.reduce((acum, course_id) => (
+    [
+      ...acum,
+      ...exercisesModels.map((ex) => ({ ...ex, course_id })),
+    ]
+  ), []);
+
+  const defaultUserExercises = usersOfDefaultCourses.reduce((acum, user) => {
+    return [
+      ...acum,
+      ...exercisesModels.map((ex) => ({
+        user_id: user.user_id,
+        course_id: user.course_id,
+        guide_id: ex.guide_id,
+        exercise_id: ex.exercise_id,
+        step_list: JSON.stringify([]),
+        state: 'incompleted',
+        calification: null
+      }))
+    ];
+  }, []);
+
+
+  // Inserting
+  const exerciseTemplates = [
+    ...exercisesOfGreatCourses,
+    ...exercisesOfDefaultCourses
+  ];
+
+  const userExercises = [
+    ...greatUserExercises,
+    ...defaultUserExercises
+  ];
+
   if (!currentExercises.length) {
-    await knex('exercises').insert(exercises);
+    await knex('exercises').insert(exerciseTemplates);
   }
   if (!currentStudentExercises.length) {
     await knex('student_exercises').insert(userExercises);

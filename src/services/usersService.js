@@ -17,7 +17,7 @@ const addUser = async ({
     userId
   });
 
-  if (currentUserExercises.length) {
+  if (currentUserExercises.length) { // TODO: maybe we should check if from the course (context)
     throw createError.Conflict('Can not add exercises to an existing user');
   }
   const courseExercises = await exercisesDB.listExercises({
@@ -25,6 +25,8 @@ const addUser = async ({
     courseId
   });
   const userExercises = courseExercises.map((exercise) => ({
+    courseId: exercise.courseId,
+    guideId: exercise.guideId,
     exerciseId: exercise.exerciseId,
     stepList: JSON.stringify([]),
     userId
@@ -43,18 +45,22 @@ const addUser = async ({
 const addingExercisesToUsers = async ({
   context,
   courseId,
+  guideId,
   exerciseIds,
   userIds
 }) => {
   const exercises = await exercisesDB.listExercisesByIds({
     context,
     courseId,
+    guideId,
     exerciseIds
   });
 
   const userExercises = userIds.reduce((acum, userId) => {
     const exercisesToInsert = exercises.map((exercise) => ({
       exerciseId: exercise.exerciseId,
+      courseId: exercise.courseId,
+      guideId: exercise.guideId,
       stepList: JSON.stringify([]),
       userId
     }));

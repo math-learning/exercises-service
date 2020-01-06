@@ -24,8 +24,18 @@ const listExercises = async ({
     .from('student_exercises as se')
     .innerJoin('exercises as ex', function innerJoinFn() {
       this.on('se.exercise_id', 'ex.exercise_id');
+      this.on('se.guide_id', 'ex.guide_id');
+      this.on('se.course_id', 'ex.course_id');
     })
-    .where(snakelize({ userId, guideId, courseId }))
+    .modify((queryBuilder) => {
+      if (courseId) {
+        queryBuilder.where('ex.course_id', courseId);
+      }
+      if (guideId) {
+        queryBuilder.where('ex.guide_id', guideId);
+      }
+    })
+    .where('user_id', userId)
     .orderBy('ex.created_at')
     .then(processDbResponse)
 );
@@ -44,13 +54,19 @@ const getExercise = async ({
     .select()
     .innerJoin('exercises', function innerJoin() {
       this.on('student_exercises.exercise_id', 'exercises.exercise_id');
+      this.on('student_exercises.guide_id', 'exercises.guide_id');
+      this.on('student_exercises.course_id', 'exercises.course_id');
+    })
+    .modify((queryBuilder) => {
+      if (courseId) {
+        queryBuilder.where('student_exercises.course_id', courseId);
+      }
+      if (guideId) {
+        queryBuilder.where('student_exercises.guide_id', guideId);
+      }
     })
     .where('exercises.exercise_id', exerciseId)
-    .where(snakelize({
-      userId,
-      guideId,
-      courseId
-    }))
+    .where('user_id', userId)
     .orderBy('exercises.created_at')
     .then(processDbResponse)
     .then((response) => {
@@ -79,6 +95,8 @@ const insertExercises = async ({ userExercises }) => (
  */
 const updateExercise = async ({
   userId,
+  courseId,
+  guideId,
   exerciseId,
   exerciseMetadata
 }) => (
@@ -86,6 +104,8 @@ const updateExercise = async ({
     .update(snakelize(exerciseMetadata))
     .where(snakelize({
       userId,
+      courseId,
+      guideId,
       exerciseId
     }))
     .returning('*')
@@ -102,11 +122,10 @@ const updateExercise = async ({
  * Restore exercise resolution
  *
  */
-// TODO: deberia ser courseId, guideId tambien. (agregarlo en la tabla)
-const restoreExercise = async ({ exerciseId }) => (
+const restoreExercise = async ({ courseId, guideId, exerciseId }) => (
   knex('student_exercises')
     .update(snakelize(DEFAULT_METADATA))
-    .where(snakelize({ exerciseId }))
+    .where(snakelize({ courseId, guideId, exerciseId }))
     .then(processDbResponse)
 );
 

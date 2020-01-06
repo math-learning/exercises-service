@@ -7,7 +7,7 @@ exports.up = (knex) => {
     create TYPE exercise_state as enum('resolved', 'incompleted');
 
     CREATE TABLE exercises(
-      exercise_id CHARACTER VARYING(64) PRIMARY KEY DEFAULT uuid_generate_v4() NOT NULL,
+      exercise_id CHARACTER VARYING(128) DEFAULT uuid_generate_v4() NOT NULL,
       guide_id    CHARACTER VARYING(128) NOT NULL,
       course_id   CHARACTER VARYING(128) NOT NULL,
       created_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -16,18 +16,21 @@ exports.up = (knex) => {
       name            CHARACTER VARYING(64) NOT NULL,
       description     CHARACTER VARYING(64),
       type            type NOT NULL,
-      difficulty      difficulty NOT NULL
+      difficulty      difficulty NOT NULL,
+      PRIMARY KEY (exercise_id, course_id, guide_id)
     );
 
     CREATE TABLE student_exercises(
       user_id      CHARACTER VARYING(64) NOT NULL,
-      exercise_id  CHARACTER VARYING(64) NOT NULL,
+      guide_id     CHARACTER VARYING(128) NOT NULL,
+      course_id    CHARACTER VARYING(128) NOT NULL,
+      exercise_id  CHARACTER VARYING(128) NOT NULL,
       created_at   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
       step_list    TEXT NOT NULL DEFAULT '"[]"',
       state        exercise_state NOT NULL DEFAULT 'incompleted',
       calification INT DEFAULT NULL,
-      PRIMARY KEY (user_id, exercise_id)
+      PRIMARY KEY (user_id, exercise_id, course_id, guide_id)
     );
 
     CREATE TABLE exercise_error_count(

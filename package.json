@@ -7,7 +7,7 @@
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "lint": "NODE_ENV=test eslint src test db",
     "lint:fix": "NODE_ENV=test eslint --fix src test db",
-    "test:app": "export NODE_ENV=test && npm run db:latest && node ./node_modules/.bin/_mocha",
+    "test:app": "export NODE_ENV=test && npm run db:rollback && npm run db:latest && node ./node_modules/.bin/_mocha",
     "test:watch": "npm run test:app -- --watch",
     "test": "export NODE_ENV=test && npm run lint && nyc --reporter=html --reporter=text npm run test:app",
     "start": "export NODE_ENV=dev && npm run db:latest && npm run db:initial-state && node src/app",
