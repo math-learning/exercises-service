@@ -214,15 +214,15 @@ exports.seed = async (knex) => {
 
   // Great courses
   const idsOfGreatCourse = ['analisis-matematico-ii-curso-2', 'analisis-matematico-infinito-curso-2', 'algo-ii-curso-2', 'proba-1', 'algebra-ii-curso-2'];
-  const exercisesOfGreatCourses = idsOfGreatCourse.reduce((acum, course_id) => (
+  const exercisesOfGreatCourses = idsOfGreatCourse.reduce((acum, course_id) => ( // eslint-disable-line
     [
       ...acum,
       ...exercisesModels.map((ex) => ({ ...ex, course_id }))
     ]
   ), []);
 
-  const greatUserExercises = usersOfGreatCourses.reduce((acum, user) => {
-    return [
+  const greatUserExercises = usersOfGreatCourses.reduce((acum, user) => (
+    [
       ...acum,
       ...exercisesModels.map((ex) => ({
         user_id: user.user_id,
@@ -233,20 +233,20 @@ exports.seed = async (knex) => {
         state: 'incompleted',
         calification: null
       }))
-    ];
-  }, []);
+    ]
+  ), []);
 
 
   // Default courses
-  const exercisesOfDefaultCourses = idsOfDefaultCourses.reduce((acum, course_id) => (
+  const exercisesOfDefaultCourses = idsOfDefaultCourses.reduce((acum, course_id) => ( // eslint-disable-line
     [
       ...acum,
       ...exercisesModels.map((ex) => ({ ...ex, course_id })),
     ]
   ), []);
 
-  const defaultUserExercises = usersOfDefaultCourses.reduce((acum, user) => {
-    return [
+  const defaultUserExercises = usersOfDefaultCourses.reduce((acum, user) => (
+    [
       ...acum,
       ...exercisesModels.map((ex) => ({
         user_id: user.user_id,
@@ -257,8 +257,8 @@ exports.seed = async (knex) => {
         state: 'incompleted',
         calification: null
       }))
-    ];
-  }, []);
+    ]
+  ), []);
 
 
   // Inserting
