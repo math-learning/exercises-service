@@ -160,7 +160,7 @@ exports.seed = async (knex) => {
   const derivativeExercises = [{
     guide_id: 'derivadas',
     exercise_id: 'derivative-i',
-    problem_input: '(1/2 + 4 * x) dx',
+    problem_input: '\\frac{d\\left(e^x \\cdot \\ x\\right)}{dx}\\ +\\ \\frac{d\\left(sen\\left(x\\right)\\cdot x^2\\right)}{dx}',
     name: 'Derivada ejercicio 1',
     description: 'calcula la derivada por pasos',
     type: 'derivative',
@@ -168,7 +168,7 @@ exports.seed = async (knex) => {
   }, {
     guide_id: 'derivadas',
     exercise_id: 'derivative-ii',
-    problem_input: '((10 * 5x) / 2) dx',
+    problem_input: '\\frac{d\\left(x^2+x\\ +\\cos \\left(x\\right)\\right)}{dx}',
     name: 'Derivada ejercicio 2',
     description: 'calcula la derivada por pasos',
     type: 'derivative',
@@ -176,8 +176,24 @@ exports.seed = async (knex) => {
   }, {
     guide_id: 'derivadas',
     exercise_id: 'derivative-iii',
-    problem_input: '(2x + 1) dx',
-    name: 'Derivada ejercicio 2',
+    problem_input: '\\frac{d(\\frac{sen(x)}{\\cos(x)})} {dx}',
+    name: 'Derivada ejercicio 3',
+    description: 'calcula la derivada por pasos',
+    type: 'derivative',
+    difficulty: 'hard'
+  }, {
+    guide_id: 'derivadas',
+    exercise_id: 'derivative-iv',
+    problem_input: '\\frac{d\\left(x^2 \\cdot \\sin(x) \\cdot \\cos \\left(x\\right)\\right)}{dx}',
+    name: 'Derivada ejercicio 4',
+    description: 'calcula la derivada por pasos',
+    type: 'derivative',
+    difficulty: 'easy'
+  }, {
+    guide_id: 'derivadas',
+    exercise_id: 'derivative-v',
+    problem_input: '\\frac{d\\left(e^3  \\cdot x \\right)}{dx}',
+    name: 'Derivada ejercicio 5',
     description: 'calcula la derivada por pasos',
     type: 'derivative',
     difficulty: 'hard'
@@ -186,7 +202,7 @@ exports.seed = async (knex) => {
   const integralExercises = [{
     guide_id: 'integrales',
     exercise_id: 'integral-i',
-    problem_input: '(8x ** x) dx',
+    problem_input: '\\frac{d(\\frac{ \\frac{d(sen(x))}{dx}}{\\cos(x)})} {dx}',
     name: 'Derivada ejercicio 1',
     description: 'calcula la derivada por pasos',
     type: 'integral',
@@ -194,7 +210,7 @@ exports.seed = async (knex) => {
   }, {
     guide_id: 'integrales',
     exercise_id: 'integral-ii',
-    problem_input: '(10 + 12 * x) dx',
+    problem_input: '\\frac{d\\left(  \\frac{d\\left(e^x\\right)}{dx} \\right)}{dx}',
     name: 'Derivada ejercicio 2',
     description: 'calcula la integral por pasos',
     type: 'integral',
@@ -202,7 +218,7 @@ exports.seed = async (knex) => {
   }, {
     guide_id: 'integrales',
     exercise_id: 'integral-iii',
-    problem_input: '(2 * x + 10) dx',
+    problem_input: '\\frac{d\\left(e^x\\right)}{dx}',
     name: 'Derivada ejercicio 2',
     description: 'calcula la integral por pasos',
     type: 'integral',
