@@ -3,7 +3,7 @@ exports.up = (knex) => {
     CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
     create TYPE type as enum('derivative', 'integral');
-    create TYPE difficulty as enum('easy', 'normal', 'hard');
+    create TYPE difficulty as enum('easy', 'medium', 'hard');
     create TYPE exercise_state as enum('resolved', 'incompleted');
 
     CREATE TABLE exercises(

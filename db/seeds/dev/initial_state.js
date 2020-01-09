@@ -172,7 +172,7 @@ exports.seed = async (knex) => {
     name: 'Derivada ejercicio 2',
     description: 'calcula la derivada por pasos',
     type: 'derivative',
-    difficulty: 'normal' // TODO: change to medium
+    difficulty: 'medium'
   }, {
     guide_id: 'derivadas',
     exercise_id: 'derivative-iii',
@@ -203,23 +203,23 @@ exports.seed = async (knex) => {
     guide_id: 'integrales',
     exercise_id: 'integral-i',
     problem_input: '\\frac{d(\\frac{ \\frac{d(sen(x))}{dx}}{\\cos(x)})} {dx}',
-    name: 'Derivada ejercicio 1',
-    description: 'calcula la derivada por pasos',
+    name: 'Integrales ejercicio 1',
+    description: 'calcula la integral por pasos',
     type: 'integral',
     difficulty: 'easy'
   }, {
     guide_id: 'integrales',
     exercise_id: 'integral-ii',
     problem_input: '\\frac{d\\left(  \\frac{d\\left(e^x\\right)}{dx} \\right)}{dx}',
-    name: 'Derivada ejercicio 2',
+    name: 'Integrales ejercicio 2',
     description: 'calcula la integral por pasos',
     type: 'integral',
-    difficulty: 'normal'
+    difficulty: 'medium'
   }, {
     guide_id: 'integrales',
     exercise_id: 'integral-iii',
     problem_input: '\\frac{d\\left(e^x\\right)}{dx}',
-    name: 'Derivada ejercicio 2',
+    name: 'Integrales ejercicio 3',
     description: 'calcula la integral por pasos',
     type: 'integral',
     difficulty: 'hard'
