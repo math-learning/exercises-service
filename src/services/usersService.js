@@ -1,4 +1,3 @@
-const createError = require('http-errors');
 const exercisesDB = require('../databases/exercisesDb');
 const userExercisesDB = require('../databases/userExercisesDb');
 
@@ -17,8 +16,8 @@ const addUser = async ({
     userId
   });
 
-  if (currentUserExercises.length) { // TODO: maybe we should check if from the course (context)
-    throw createError.Conflict('Can not add exercises to an existing user');
+  if (currentUserExercises.length) {
+    return currentUserExercises;
   }
   const courseExercises = await exercisesDB.listExercises({
     context,
