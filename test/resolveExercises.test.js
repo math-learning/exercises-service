@@ -420,4 +420,97 @@ describe('Integration resolve exercises tests', () => {
       assert.deepEqual(sanitizeResponse(response.body), expectedUserExercise);
     });
   });
+
+  describe('Delivering the exercise (when the status is not resolved) should fail', () => {
+    before(async () => {
+      mocks.mockAuth({ profile: studentProfile });
+      mocks.mockGetCourse({ courseId, course });
+
+      response = await requests.deliverExercise({
+        exerciseId: derivativeExerciseId,
+        courseId,
+        guideId,
+        token
+      });
+    });
+
+    it('status is 409', () => assert.equal(response.status, 409));
+  });
+
+  describe('Resolving the exercise again (status resolved)', () => {
+    before(async () => {
+      mocks.mockAuth({ profile: studentProfile });
+      mocks.mockGetCourse({ courseId, course });
+      mocks.mockResolveExercise({
+        type: derivativeExercise.type,
+        problemInput: newProblemInput,
+        stepList: [],
+        currentExpression: firstExpression,
+        response: { exerciseStatus: 'resolved' }
+      });
+
+      response = await requests.resolveExercise({
+        exerciseId: derivativeExerciseId,
+        courseId,
+        guideId,
+        token,
+        currentExpression: firstExpression
+      });
+    });
+
+    it('status is OK', () => assert.equal(response.status, 200));
+
+    it('should retrieve the current status', () => {
+      assert.deepEqual(response.body, { exerciseStatus: 'resolved' });
+    });
+  });
+
+  describe('Delivering the exercise', () => {
+    before(async () => {
+      mocks.mockAuth({ profile: studentProfile });
+      mocks.mockGetCourse({ courseId, course });
+
+      response = await requests.deliverExercise({
+        exerciseId: derivativeExerciseId,
+        courseId,
+        guideId,
+        token
+      });
+    });
+
+    it('status is OK', () => assert.equal(response.status, 200));
+  });
+
+  describe('Trying to delete a step after deliver (should fail)', () => {
+    before(async () => {
+      mocks.mockAuth({ profile: studentProfile });
+      mocks.mockGetCourse({ courseId, course });
+
+      response = await requests.deleteExerciseStep({
+        exerciseId: derivativeExerciseId,
+        courseId,
+        guideId,
+        token
+      });
+    });
+
+    it('status is 409', () => assert.equal(response.status, 409));
+  });
+
+  describe('Trying to resolve the exercise after deliver (should fail)', () => {
+    before(async () => {
+      mocks.mockAuth({ profile: studentProfile });
+      mocks.mockGetCourse({ courseId, course });
+
+      response = await requests.resolveExercise({
+        exerciseId: derivativeExerciseId,
+        courseId,
+        guideId,
+        token,
+        currentExpression: firstExpression
+      });
+    });
+
+    it('status is 409', () => assert.equal(response.status, 409));
+  });
 });

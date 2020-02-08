@@ -1,6 +1,13 @@
+const createError = require('http-errors');
 const mathResolverClient = require('../clients/mathResolverClient');
 const usersService = require('../services/usersService');
 const statisticsService = require('../services/statisticsService');
+
+function validateExerciseHasNotBeenDelivered(currentExercise) {
+  if (currentExercise.state === 'delivered') {
+    throw createError.Conflict('Exercise has been already delivered');
+  }
+}
 
 /**
  * Resolve exercise.
@@ -16,6 +23,8 @@ const resolve = async ({
   const currentExercise = await usersService.getExercise({
     context, guideId, courseId, exerciseId
   });
+  validateExerciseHasNotBeenDelivered(currentExercise);
+
   const { user: { userId } } = context;
   const { problemInput, type, stepList } = currentExercise;
   const { currentExpression } = exercise;
@@ -58,6 +67,8 @@ const removeStep = async ({
   const currentExercise = await usersService.getExercise({
     context, guideId, courseId, exerciseId
   });
+  validateExerciseHasNotBeenDelivered(currentExercise);
+
   const { user: { userId } } = context;
   const { stepList } = currentExercise;
 
@@ -90,8 +101,39 @@ const askHelp = async ({
   return mathResolverClient.askHelp({ context, type, problemInput, stepList });
 };
 
+/**
+ * Delivering exercise
+ *
+ */
+const deliver = async ({
+  context,
+  guideId,
+  courseId,
+  exerciseId
+}) => {
+  const { user: { userId } } = context;
+  const currentExercise = await usersService.getExercise({
+    context, guideId, courseId, exerciseId
+  });
+
+  if (currentExercise.state === 'delivered') {
+    return;
+  }
+
+  if (currentExercise.state !== 'resolved') {
+    throw createError.Conflict('Exercise has not been resolved yet');
+  }
+
+  const exerciseMetadata = { state: 'delivered' };
+  await usersService.updateExercise({
+    context, userId, guideId, courseId, exerciseId, exerciseMetadata
+  });
+};
+
+
 module.exports = {
   askHelp,
+  deliver,
   removeStep,
   resolve
 };

@@ -176,6 +176,24 @@ const deleteExerciseStep = async ({
   return { status: response.status };
 };
 
+const deliverExercise = async ({
+  token,
+  courseId,
+  guideId,
+  exerciseId
+}) => {
+  const updateExUrl = `${baseUrl}/courses/${courseId}/guides/${guideId}/exercises/${exerciseId}/deliver`;
+
+  const response = await fetch(`${updateExUrl}`, {
+    method: 'put',
+    headers: {
+      authorization: token,
+      'Content-Type': 'application/json'
+    }
+  });
+  return { status: response.status };
+};
+
 
 function errorWrapper(funct) {
   return function inner(...args) {
@@ -190,6 +208,7 @@ function errorWrapper(funct) {
 module.exports = {
   addUser: errorWrapper(addUser),
   createExercise: errorWrapper(createExercise),
+  deliverExercise: errorWrapper(deliverExercise),
   removeExercise: errorWrapper(removeExercise),
   listExercises: errorWrapper(listExercises),
   updateExercise: errorWrapper(updateExercise),

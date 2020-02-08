@@ -4,7 +4,7 @@ exports.up = (knex) => {
 
     create TYPE type as enum('derivative', 'integral');
     create TYPE difficulty as enum('easy', 'medium', 'hard');
-    create TYPE exercise_state as enum('resolved', 'incompleted');
+    create TYPE exercise_state as enum('delivered', 'resolved', 'incompleted');
 
     CREATE TABLE exercises(
       exercise_id CHARACTER VARYING(128) DEFAULT uuid_generate_v4() NOT NULL,
