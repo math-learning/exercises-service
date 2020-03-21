@@ -114,6 +114,7 @@ const getExercise = async ({
     courseId,
     exerciseId
   });
+
   exercise.stepList = JSON.parse(exercise.stepList);
 
   return exercise;

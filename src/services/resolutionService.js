@@ -23,6 +23,7 @@ const resolve = async ({
   const currentExercise = await usersService.getExercise({
     context, guideId, courseId, exerciseId
   });
+
   validateExerciseHasNotBeenDelivered(currentExercise);
 
   const { user: { userId } } = context;
@@ -35,7 +36,7 @@ const resolve = async ({
 
   let exerciseMetadata = {};
   if (resolveResult.exerciseStatus === 'invalid') {
-    await statisticsService.addInvalidStep({ context, userId, exerciseId });
+    await statisticsService.addInvalidStep({ context, guideId, courseId, exerciseId, userId });
     exerciseMetadata = { state: 'incompleted' };
 
   } else if (resolveResult.exerciseStatus === 'valid') {

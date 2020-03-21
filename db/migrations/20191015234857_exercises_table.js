@@ -34,11 +34,13 @@ exports.up = (knex) => {
     );
 
     CREATE TABLE exercise_error_count(
-      user_id       CHARACTER VARYING(64) NOT NULL,
-      exercise_id   CHARACTER VARYING(64) NOT NULL,
+      user_id      CHARACTER VARYING(64) NOT NULL,
+      guide_id     CHARACTER VARYING(128) NOT NULL,
+      course_id    CHARACTER VARYING(128) NOT NULL,
+      exercise_id  CHARACTER VARYING(64) NOT NULL,
 
-      count         INT DEFAULT 0,
-      PRIMARY KEY (user_id, exercise_id)
+      count        INT DEFAULT 0,
+      PRIMARY KEY  (user_id, exercise_id, guide_id, course_id)
     );
   `;
 

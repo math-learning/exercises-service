@@ -18,6 +18,7 @@ const statusController = require('./controllers/statusController');
 const usersController = require('./controllers/usersController');
 const exerciseController = require('./controllers/exerciseController');
 const resolutionController = require('./controllers/resolutionController');
+const statisticsController = require('./controllers/statisticsController');
 
 const app = express();
 const { port } = configs.app;
@@ -57,6 +58,9 @@ router.post('/courses/:courseId/guides/:guideId/exercises/:exerciseId/resolve', 
 router.put('/courses/:courseId/guides/:guideId/exercises/:exerciseId/deliver', courseValidatorMiddleware, resolutionController.deliver);
 
 // router.post('/courses/:courseId/guides/:guideId/exercises/:exerciseId/help', resolutionController.askHelp);
+
+// Statistics
+router.get('/courses/:courseId/errors/statistics', courseValidatorMiddleware, statisticsController.getErrorCountStatistics);
 
 app.use(router);
 
