@@ -12,10 +12,9 @@ const addInvalidStep = async ({ userId, guideId, courseId, exerciseId }) => {
   if (!errorCount.count) {
     await statisticsDb.createErrorCountEntry({ userId, guideId, courseId, exerciseId });
   }
-  const currentCount = parseInt(errorCount.count || 0, 10);
 
   await statisticsDb.increaseErrorCount({
-    userId, guideId, courseId, exerciseId, count: currentCount + 1
+    userId, guideId, courseId, exerciseId, count: errorCount.count + 1
   });
 };
 

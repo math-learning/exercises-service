@@ -3,13 +3,14 @@ const requests = require('./utils/requests');
 const mocks = require('./utils/mocks');
 const { cleanDb, sanitizeResponse } = require('./utils/db');
 
-describe('Integration resolve exercises tests', () => {
+describe.only('Integration resolve exercises tests', () => {
   let token;
   let userId;
   let courseId;
   let guideId;
   let course;
   let newName;
+  let exerciseName;
   let newProblemInput;
   let studentProfile;
   let professorProfile;
@@ -28,6 +29,7 @@ describe('Integration resolve exercises tests', () => {
     userId = 'student';
     token = 'token';
     newName = 'new name';
+    exerciseName = 'derivada';
     newProblemInput = '2x + 1';
     firstExpression = '2x';
     secondExpression = '2';
@@ -61,7 +63,7 @@ describe('Integration resolve exercises tests', () => {
     before(async () => {
       derivativeExercise = {
         problemInput: 'dx',
-        name: 'derivada',
+        name: exerciseName,
         description: 'calcula la derivada',
         type: 'derivative',
         difficulty: 'easy'
@@ -116,6 +118,78 @@ describe('Integration resolve exercises tests', () => {
 
     it('should retrieve the current status', () => {
       assert.deepEqual(response.body, { exerciseStatus: 'invalid' });
+    });
+  });
+
+  describe('Getting error statistics', () => {
+    before(async () => {
+      mocks.mockAuth({ profile: studentProfile });
+      mocks.mockGetCourse({ courseId, course });
+
+      response = await requests.getExerciseStatistics({ courseId, token });
+    });
+
+    it('the statistics has been updated', () => {
+      assert.deepEqual(response.body, [{
+        guideId,
+        exercises: [{
+          count: 1,
+          courseId,
+          guideId,
+          exerciseId: derivativeExerciseId,
+          name: exerciseName
+        }]
+      }]);
+    });
+  });
+
+  describe('Resolving the exercise (status invalid again)', () => {
+    before(async () => {
+      mocks.mockAuth({ profile: studentProfile });
+      mocks.mockGetCourse({ courseId, course });
+      mocks.mockResolveExercise({
+        type: derivativeExercise.type,
+        problemInput: derivativeExercise.problemInput,
+        stepList: [],
+        currentExpression: firstExpression,
+        response: { exerciseStatus: 'invalid' }
+      });
+
+      response = await requests.resolveExercise({
+        exerciseId: derivativeExerciseId,
+        courseId,
+        guideId,
+        token,
+        currentExpression: firstExpression
+      });
+    });
+
+    it('status is OK', () => assert.equal(response.status, 200));
+
+    it('should retrieve the current status', () => {
+      assert.deepEqual(response.body, { exerciseStatus: 'invalid' });
+    });
+  });
+
+  describe('Getting error statistics again', () => {
+    before(async () => {
+      mocks.mockAuth({ profile: studentProfile });
+      mocks.mockGetCourse({ courseId, course });
+
+      response = await requests.getExerciseStatistics({ courseId, token });
+    });
+
+    it('the statistics has been updated (increase the error count)', () => {
+      assert.deepEqual(response.body, [{
+        guideId,
+        exercises: [{
+          count: 2,
+          courseId,
+          guideId,
+          exerciseId: derivativeExerciseId,
+          name: exerciseName
+        }]
+      }]);
     });
   });
 
