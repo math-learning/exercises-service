@@ -3,7 +3,7 @@ const requests = require('./utils/requests');
 const mocks = require('./utils/mocks');
 const { cleanDb, sanitizeResponse } = require('./utils/db');
 
-describe.only('Integration resolve exercises tests', () => {
+describe('Integration resolve exercises tests', () => {
   let token;
   let userId;
   let courseId;
