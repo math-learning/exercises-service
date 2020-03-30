@@ -49,6 +49,7 @@ router.delete('/courses/:courseId/guides/:guideId/exercises/:exerciseId', course
 
 // User Exercises
 router.get('/courses/:courseId/guides/:guideId/user/exercises', courseValidatorMiddleware, usersController.listExercises);
+router.get('/courses/:courseId/guides/:guideId/user/:userId/exercises', courseValidatorMiddleware, usersController.listDeliveredExercises);
 router.get('/courses/:courseId/guides/:guideId/user/exercises/:exerciseId', courseValidatorMiddleware, usersController.getExercise);
 router.put('/courses/:courseId/guides/:guideId/user/exercises/:exerciseId', courseValidatorMiddleware, usersController.updateExercise);
 

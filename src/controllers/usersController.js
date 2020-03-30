@@ -49,13 +49,16 @@ const listExercises = async (req, res) => {
     guideId
   } = req.params;
 
+  const { user } = req.context;
+
   const exercises = await usersService.listExercises({
     context: req.context,
     guideId,
-    courseId
+    courseId,
+    userId: user.userId
   });
-  return res.status(200)
-    .json(exercises);
+
+  return res.status(200).json(exercises);
 };
 
 /**
@@ -75,8 +78,7 @@ const getExercise = async (req, res) => {
     courseId,
     exerciseId
   });
-  return res.status(200)
-    .json(exercise);
+  return res.status(200).json(exercise);
 };
 
 const updateExercise = async (req, res) => {
@@ -104,9 +106,32 @@ const updateExercise = async (req, res) => {
     .json(updatedExercise);
 };
 
+/**
+ * Get only "delivered" user exercises
+ *
+ */
+const listDeliveredExercises = async (req, res) => {
+  const {
+    courseId,
+    guideId,
+    userId
+  } = req.params;
+
+  const exercises = await usersService.listExercises({
+    context: req.context,
+    guideId,
+    courseId,
+    userId,
+    state: 'delivered'
+  });
+
+  return res.status(200).json(exercises);
+};
+
 module.exports = expressify({
   addUser,
   getExercise,
   listExercises,
+  listDeliveredExercises,
   updateExercise
 });
