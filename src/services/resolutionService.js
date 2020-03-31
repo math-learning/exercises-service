@@ -20,13 +20,13 @@ const resolve = async ({
   exerciseId,
   exercise
 }) => {
+  const { user: { userId } } = context;
   const currentExercise = await usersService.getExercise({
-    context, guideId, courseId, exerciseId
+    context, guideId, courseId, exerciseId, userId
   });
 
   validateExerciseHasNotBeenDelivered(currentExercise);
 
-  const { user: { userId } } = context;
   const { problemInput, type, stepList } = currentExercise;
   const { currentExpression } = exercise;
 
@@ -65,12 +65,12 @@ const removeStep = async ({
   courseId,
   exerciseId
 }) => {
+  const { user: { userId } } = context;
   const currentExercise = await usersService.getExercise({
-    context, guideId, courseId, exerciseId
+    context, guideId, courseId, exerciseId, userId
   });
   validateExerciseHasNotBeenDelivered(currentExercise);
 
-  const { user: { userId } } = context;
   const { stepList } = currentExercise;
 
   if (stepList.length > 0) {
@@ -93,8 +93,9 @@ const askHelp = async ({
   courseId,
   exerciseId
 }) => {
+  const { user: { userId } } = context;
   const currentExercise = await usersService.getExercise({
-    context, guideId, courseId, exerciseId
+    context, guideId, courseId, exerciseId, userId
   });
   const { type } = currentExercise;
   const { stepList, problemInput } = currentExercise;
@@ -114,7 +115,7 @@ const deliver = async ({
 }) => {
   const { user: { userId } } = context;
   const currentExercise = await usersService.getExercise({
-    context, guideId, courseId, exerciseId
+    context, guideId, courseId, exerciseId, userId
   });
 
   if (currentExercise.state === 'delivered') {

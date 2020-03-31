@@ -85,14 +85,14 @@ const listExercises = async ({
   guideId,
   courseId,
   userId,
-  state
+  metadata
 }) => (
   userExercisesDB.listExercises({
     context,
     userId,
     guideId,
     courseId,
-    state
+    metadata
   })
 );
 
@@ -104,16 +104,11 @@ const getExercise = async ({
   context,
   guideId,
   courseId,
-  exerciseId
+  exerciseId,
+  userId
 }) => {
-  const { user } = context;
-
   const exercise = await userExercisesDB.getExercise({
-    context,
-    userId: user.userId,
-    guideId,
-    courseId,
-    exerciseId
+    context, userId, guideId, courseId, exerciseId
   });
 
   exercise.stepList = JSON.parse(exercise.stepList);

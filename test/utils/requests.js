@@ -55,6 +55,18 @@ const listExercises = async ({ token, courseId, guideId }) => {
   return { status: response.status, body: await response.json() };
 };
 
+const listSpecificUserExercises = async ({ token, courseId, guideId, userId }) => {
+  const listExUrl = `${baseUrl}/courses/${courseId}/guides/${guideId}/user/${userId}/exercises`;
+
+  const response = await fetch(listExUrl, {
+    headers: {
+      authorization: token,
+      'Content-Type': 'application/json'
+    }
+  });
+  return { status: response.status, body: await response.json() };
+};
+
 const removeExercise = async ({
   token,
   courseId,
@@ -107,6 +119,24 @@ const getUserExercise = async ({
   exerciseId
 }) => {
   const addUserUrl = `${baseUrl}/courses/${courseId}/guides/${guideId}/user/exercises/${exerciseId}`;
+
+  const response = await fetch(addUserUrl, {
+    headers: {
+      authorization: token,
+      'Content-Type': 'application/json'
+    }
+  });
+  return { status: response.status, body: await response.json() };
+};
+
+const getSpecificUserExercise = async ({
+  token,
+  courseId,
+  guideId,
+  exerciseId,
+  userId
+}) => {
+  const addUserUrl = `${baseUrl}/courses/${courseId}/guides/${guideId}/user/${userId}/exercises/${exerciseId}`;
 
   const response = await fetch(addUserUrl, {
     headers: {
@@ -225,8 +255,10 @@ module.exports = {
   listExercises: errorWrapper(listExercises),
   updateExercise: errorWrapper(updateExercise),
   getUserExercise: errorWrapper(getUserExercise),
+  getSpecificUserExercise: errorWrapper(getSpecificUserExercise),
   getExerciseStatistics: errorWrapper(getExerciseStatistics),
   listUserExercises: errorWrapper(listUserExercises),
+  listSpecificUserExercises: errorWrapper(listSpecificUserExercises),
   updateUserExercise: errorWrapper(updateUserExercise),
   deleteExerciseStep: errorWrapper(deleteExerciseStep),
   resolveExercise: errorWrapper(resolveExercise),

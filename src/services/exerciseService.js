@@ -42,7 +42,14 @@ const create = async ({
     exerciseIds: [createdExercise.exerciseId]
   });
 
-  return createdExercise;
+  // return user exercise
+  return usersService.getExercise({
+    context,
+    guideId,
+    courseId,
+    exerciseId: createdExercise.exerciseId,
+    userId: context.user.userId
+  });
 };
 
 /**

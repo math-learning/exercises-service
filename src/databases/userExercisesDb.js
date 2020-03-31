@@ -18,7 +18,7 @@ const listExercises = async ({
   userId,
   guideId,
   courseId,
-  state
+  metadata = {}
 }) => (
   knex.queryBuilder()
     .select('state', 'user_id', 'calification', 'ex.*')
@@ -35,8 +35,8 @@ const listExercises = async ({
       if (guideId) {
         queryBuilder.where('ex.guide_id', guideId);
       }
-      if (state) {
-        queryBuilder.where('se.state', state);
+      if (metadata.state) {
+        queryBuilder.where('se.state', metadata.state);
       }
     })
     .where('user_id', userId)

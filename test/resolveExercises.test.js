@@ -495,6 +495,32 @@ describe('Integration resolve exercises tests', () => {
     });
   });
 
+  describe('Asking all the student exercises (by the proffesor) (before delivering it)', () => {
+    let expectedUserExercises;
+
+    before(async () => {
+      expectedUserExercises = [];
+    });
+
+    before(async () => {
+      mocks.mockAuth({ profile: professorProfile });
+      mocks.mockGetCourse({ courseId, course });
+
+      response = await requests.listSpecificUserExercises({
+        courseId,
+        guideId,
+        userId: studentProfile.userId,
+        token
+      });
+    });
+
+    it('status is OK', () => assert.equal(response.status, 200));
+
+    it('should retrieve all the delivered exercises (none)', () => {
+      assert.deepEqual(sanitizeResponse(response.body), expectedUserExercises);
+    });
+  });
+
   describe('Delivering the exercise (when the status is not resolved) should fail', () => {
     before(async () => {
       mocks.mockAuth({ profile: studentProfile });
@@ -553,6 +579,117 @@ describe('Integration resolve exercises tests', () => {
     });
 
     it('status is OK', () => assert.equal(response.status, 200));
+  });
+
+  describe('Asking the exercise (status delivered)', () => {
+    let expectedUserExercise;
+
+    before(async () => {
+      expectedUserExercise = {
+        ...derivativeExercise,
+        userId,
+        guideId,
+        courseId,
+        exerciseId: derivativeExerciseId,
+        name: newName,
+        problemInput: newProblemInput,
+        state: 'delivered',
+        calification: null,
+        stepList: [firstExpression]
+      };
+    });
+
+    before(async () => {
+      mocks.mockAuth({ profile: studentProfile });
+      mocks.mockGetCourse({ courseId, course });
+
+      response = await requests.getUserExercise({
+        exerciseId: derivativeExerciseId,
+        courseId,
+        guideId,
+        token
+      });
+    });
+
+    it('status is OK', () => assert.equal(response.status, 200));
+
+    it('should retrieve the asked exercise (without the last step)', () => {
+      assert.deepEqual(sanitizeResponse(response.body), expectedUserExercise);
+    });
+  });
+
+  describe('Asking all the student exercises (by the proffesor)', () => {
+    let expectedUserExercises;
+
+    before(async () => {
+      expectedUserExercises = [{
+        ...derivativeExercise,
+        userId,
+        guideId,
+        courseId,
+        exerciseId: derivativeExerciseId,
+        name: newName,
+        problemInput: newProblemInput,
+        state: 'delivered',
+        calification: null
+      }];
+    });
+
+    before(async () => {
+      mocks.mockAuth({ profile: professorProfile });
+      mocks.mockGetCourse({ courseId, course });
+
+      response = await requests.listSpecificUserExercises({
+        courseId,
+        guideId,
+        userId: studentProfile.userId,
+        token
+      });
+    });
+
+    it('status is OK', () => assert.equal(response.status, 200));
+
+    it('should retrieve the asked exercises', () => {
+      assert.deepEqual(sanitizeResponse(response.body), expectedUserExercises);
+    });
+  });
+
+  describe('Asking the student exercise (by the profesor)', () => {
+    let expectedUserExercise;
+
+    before(async () => {
+      expectedUserExercise = {
+        ...derivativeExercise,
+        userId,
+        guideId,
+        courseId,
+        exerciseId: derivativeExerciseId,
+        name: newName,
+        problemInput: newProblemInput,
+        state: 'delivered',
+        calification: null,
+        stepList: [firstExpression]
+      };
+    });
+
+    before(async () => {
+      mocks.mockAuth({ profile: professorProfile });
+      mocks.mockGetCourse({ courseId, course });
+
+      response = await requests.getSpecificUserExercise({
+        exerciseId: derivativeExerciseId,
+        courseId,
+        guideId,
+        userId: studentProfile.userId,
+        token
+      });
+    });
+
+    it('status is OK', () => assert.equal(response.status, 200));
+
+    it('should retrieve the asked exercise', () => {
+      assert.deepEqual(sanitizeResponse(response.body), expectedUserExercise);
+    });
   });
 
   describe('Trying to delete a step after deliver (should fail)', () => {

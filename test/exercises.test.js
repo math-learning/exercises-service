@@ -61,7 +61,11 @@ describe('Integration exercises tests', () => {
       expectedExercise = {
         ...derivativeEx,
         guideId,
-        courseId
+        courseId,
+        state: 'incompleted',
+        calification: null,
+        stepList: [],
+        userId: professorProfile.userId,
       };
     });
 
@@ -180,7 +184,11 @@ describe('Integration exercises tests', () => {
       expectedExercise = {
         ...integrateEx,
         guideId,
-        courseId
+        courseId,
+        state: 'incompleted',
+        calification: null,
+        stepList: [],
+        userId: professorProfile.userId
       };
     });
 
