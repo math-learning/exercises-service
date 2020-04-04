@@ -112,34 +112,3 @@ module.exports = {
   resolve,
   validate,
 };
-
-
-// POST /validate
-// {
-//   problem_input: '',
-//   type: 'derivative'
-// }
-
-// POST /results/solution-tree
-// {
-//   problem_input: '',
-//   theorems: [],
-//   type: 'derivative'
-// }
-
-// POST /resolve
-// {
-//   problem_input: '',
-//   step_list: [],
-//   current_expression: '',
-//   type: 'derivative',
-//   math_tree: {}
-// }
-
-// -->
-
-// {
-//   exerciseStatus: 'valid'
-// }
-
-// tipos de estados: 'invalid', 'resolved'
