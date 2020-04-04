@@ -63,6 +63,7 @@ describe('Integration exercises tests', () => {
         guideId,
         courseId,
         state: 'incompleted',
+        pipelineStatus: 'waiting',
         calification: null,
         stepList: [],
         userId: professorProfile.userId,
@@ -75,6 +76,7 @@ describe('Integration exercises tests', () => {
       mocks.mockValidateExercise({
         courseId, guideId, ...derivativeEx
       });
+      mocks.mockGenerateMathTree({ status: 404 });
 
       createExerciseResponse = await requests.createExercise({
         exercise: derivativeEx, courseId, guideId, token
@@ -109,7 +111,7 @@ describe('Integration exercises tests', () => {
     });
 
     it('status is bad request', () => assert.equal(errorResponse.status, 400));
-    it('message describes the error', () => assert.equal(errorResponse.body.message, 'Invalid exercise type'));
+    it('message describe.skips the error', () => assert.equal(errorResponse.body.message, 'Invalid exercise type'));
   });
 
   describe('Error: Creating an invalid exercise (not sending all the properties)', () => {
@@ -132,7 +134,7 @@ describe('Integration exercises tests', () => {
     });
 
     it('status is bad request', () => assert.equal(errorResponse.status, 400));
-    it('message describes the error', () => assert.equal(errorResponse.body.message, 'problemInput, name, type or difficulty have not been provided'));
+    it('message describe.skips the error', () => assert.equal(errorResponse.body.message, 'problemInput, name, type or difficulty have not been provided'));
   });
 
   describe('Error: when the course does not exist', () => {
@@ -156,7 +158,7 @@ describe('Integration exercises tests', () => {
 
     before(() => {
       expectedExercises = [
-        { ...derivativeEx, courseId, guideId }
+        { ...derivativeEx, courseId, guideId, pipelineStatus: 'waiting' }
       ];
     });
 
@@ -186,6 +188,7 @@ describe('Integration exercises tests', () => {
         guideId,
         courseId,
         state: 'incompleted',
+        pipelineStatus: 'waiting',
         calification: null,
         stepList: [],
         userId: professorProfile.userId
@@ -198,6 +201,7 @@ describe('Integration exercises tests', () => {
       mocks.mockValidateExercise({
         courseId, guideId, ...integrateEx
       });
+      mocks.mockGenerateMathTree({ status: 404 });
 
       createExerciseResponse = await requests.createExercise({
         exercise: integrateEx, courseId, guideId, token
@@ -266,7 +270,7 @@ describe('Integration exercises tests', () => {
     });
 
     it('status is OK', () => assert.equal(errorResponse.status, 404));
-    it('message describes the error', () => assert.equal(errorResponse.body.message, 'Exercise not found'));
+    it('message describe.skips the error', () => assert.equal(errorResponse.body.message, 'Exercise not found'));
   });
 
   describe('Listing updated exercises (by the professor)', () => {
@@ -276,10 +280,10 @@ describe('Integration exercises tests', () => {
     before(() => {
       expectedExercises = [
         {
-          ...derivativeEx, courseId, guideId
+          ...derivativeEx, courseId, guideId, pipelineStatus: 'waiting'
         },
         {
-          ...integrateEx, courseId, guideId, name: newName
+          ...integrateEx, courseId, guideId, name: newName, pipelineStatus: 'waiting'
         }
       ];
     });
@@ -343,7 +347,7 @@ describe('Integration exercises tests', () => {
     before(() => {
       expectedExercises = [
         {
-          ...derivativeEx, courseId, guideId
+          ...derivativeEx, courseId, guideId, pipelineStatus: 'waiting'
         }
       ];
     });

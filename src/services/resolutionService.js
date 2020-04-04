@@ -1,6 +1,7 @@
 const createError = require('http-errors');
 const mathResolverClient = require('../clients/mathResolverClient');
 const usersService = require('../services/usersService');
+const exercisesDb = require('../databases/exercisesDb');
 const statisticsService = require('../services/statisticsService');
 
 function validateExerciseHasNotBeenDelivered(currentExercise) {
@@ -24,14 +25,19 @@ const resolve = async ({
   const currentExercise = await usersService.getExercise({
     context, guideId, courseId, exerciseId, userId
   });
+  const baseExercise = await exercisesDb.getExercise({
+    context, guideId, courseId, exerciseId
+  });
 
   validateExerciseHasNotBeenDelivered(currentExercise);
 
   const { problemInput, type, stepList } = currentExercise;
   const { currentExpression } = exercise;
+  const { mathTree } = baseExercise;
+  const parsedMathTree = JSON.parse(mathTree);
 
   const resolveResult = await mathResolverClient.resolve({
-    context, type, problemInput, stepList, currentExpression
+    context, type, problemInput, stepList, mathTree: parsedMathTree, currentExpression
   });
 
   let exerciseMetadata = {};

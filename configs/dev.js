@@ -33,6 +33,7 @@ module.exports = {
       paths: {
         validate: '/validate',
         resolve: '/resolve',
+        mathTree: '/results/solution-tree',
         help: '/help',
       }
     },

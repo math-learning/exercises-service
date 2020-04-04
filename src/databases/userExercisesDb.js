@@ -1,6 +1,7 @@
 const createError = require('http-errors');
 
 const { processDbResponse, snakelize } = require('../utils/dbUtils');
+const exercisesDb = require('./exercisesDb');
 const configs = require('../config')();
 const knex = require('knex')(configs.db); // eslint-disable-line
 
@@ -21,13 +22,14 @@ const listExercises = async ({
   metadata = {}
 }) => (
   knex.queryBuilder()
-    .select('state', 'user_id', 'calification', 'ex.*')
+    .select('state', 'user_id', 'calification')
     .from('student_exercises as se')
     .innerJoin('exercises as ex', function innerJoinFn() {
       this.on('se.exercise_id', 'ex.exercise_id');
       this.on('se.guide_id', 'ex.guide_id');
       this.on('se.course_id', 'ex.course_id');
     })
+    .select(exercisesDb.commonColumns.map((column) => `ex.${column}`))
     .modify((queryBuilder) => {
       if (courseId) {
         queryBuilder.where('ex.course_id', courseId);
@@ -56,12 +58,13 @@ const getExercise = async ({
   exerciseId
 }) => (
   knex('student_exercises')
-    .select()
+    .select('student_exercises.*')
     .innerJoin('exercises', function innerJoin() {
       this.on('student_exercises.exercise_id', 'exercises.exercise_id');
       this.on('student_exercises.guide_id', 'exercises.guide_id');
       this.on('student_exercises.course_id', 'exercises.course_id');
     })
+    .select(exercisesDb.commonColumns.map((column) => `exercises.${column}`))
     .modify((queryBuilder) => {
       if (courseId) {
         queryBuilder.where('student_exercises.course_id', courseId);

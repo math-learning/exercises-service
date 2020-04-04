@@ -5,6 +5,7 @@ exports.up = (knex) => {
     create TYPE type as enum('derivative', 'integral');
     create TYPE difficulty as enum('easy', 'medium', 'hard');
     create TYPE exercise_state as enum('delivered', 'resolved', 'incompleted');
+    create TYPE pipeline_status as enum('waiting', 'generated');
 
     CREATE TABLE exercises(
       exercise_id CHARACTER VARYING(128) DEFAULT uuid_generate_v4() NOT NULL,
@@ -17,6 +18,8 @@ exports.up = (knex) => {
       description     CHARACTER VARYING(64),
       type            type NOT NULL,
       difficulty      difficulty NOT NULL,
+      pipeline_status pipeline_status NOT NULL DEFAULT 'waiting',
+      math_tree       TEXT,
       PRIMARY KEY (exercise_id, course_id, guide_id)
     );
 
@@ -49,12 +52,13 @@ exports.up = (knex) => {
 
 exports.down = (knex) => {
   const query = `
-    DROP TABLE exercises;
-    DROP TABLE student_exercises;
-    DROP TABLE exercise_error_count;
-    DROP TYPE type;
-    DROP TYPE difficulty;
-    DROP TYPE exercise_state;
+    DROP TABLE IF EXISTS exercises;
+    DROP TABLE IF EXISTS student_exercises;
+    DROP TABLE IF EXISTS exercise_error_count;
+    DROP TYPE IF EXISTS type;
+    DROP TYPE IF EXISTS difficulty;
+    DROP TYPE IF EXISTS pipeline_status;
+    DROP TYPE IF EXISTS exercise_state;
   `;
 
   return knex.raw(query);

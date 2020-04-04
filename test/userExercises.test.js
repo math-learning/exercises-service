@@ -61,17 +61,21 @@ describe('Integration user exercises tests', () => {
         name: 'derivada',
         description: 'calcula la derivada',
         type: 'derivative',
-        difficulty: 'easy'
+        difficulty: 'easy',
+        pipelineStatus: 'waiting'
       };
       integrateExercise = {
         problemInput: 'dx',
         name: 'integrate',
         description: 'calcula la integral',
         type: 'integral',
-        difficulty: 'easy'
+        difficulty: 'easy',
+        pipelineStatus: 'waiting'
       };
       mocks.mockValidateExercise({ courseId, guideId, ...derivativeExercise });
       mocks.mockValidateExercise({ courseId, guideId, ...integrateExercise });
+      mocks.mockGenerateMathTree({ status: 404 });
+      mocks.mockGenerateMathTree({ status: 404 });
 
       derivResponse = await requests.createExercise({
         exercise: derivativeExercise, courseId, guideId, token

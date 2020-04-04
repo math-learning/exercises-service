@@ -43,12 +43,38 @@ const create = async ({
   });
 
   // return user exercise
-  return usersService.getExercise({
+  const exerciseToBeRetrieved = await usersService.getExercise({
     context,
     guideId,
     courseId,
     exerciseId: createdExercise.exerciseId,
     userId: context.user.userId
+  });
+
+
+  // generate math tree (Note that this action will be async)
+  generateMathTree({
+    context,
+    guideId,
+    courseId,
+    exerciseId: createdExercise.exerciseId,
+    problemInput: exerciseMetadata.problemInput,
+    type: exerciseMetadata.type
+  });
+
+  return exerciseToBeRetrieved;
+};
+
+const generateMathTree = async ({
+  context, guideId, courseId, exerciseId, problemInput, type
+}) => {
+  const mathTree = await mathResolverClient.generateMathTree({ context, problemInput, type });
+
+  return exercisesDB.updateExercise({
+    courseId,
+    guideId,
+    exerciseId,
+    exerciseMetadata: { mathTree: JSON.stringify(mathTree), pipelineStatus: 'generated' }
   });
 };
 
