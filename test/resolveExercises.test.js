@@ -68,7 +68,8 @@ describe('Integration resolve exercises tests', () => {
         name: exerciseName,
         description: 'calcula la derivada',
         type: 'derivative',
-        difficulty: 'easy'
+        difficulty: 'easy',
+        initialHint: null
       };
 
       mocks.mockAuth({ profile: professorProfile });

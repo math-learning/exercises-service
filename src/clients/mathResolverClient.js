@@ -3,14 +3,15 @@ const url = require('url');
 const fs = require('fs');
 const path = require('path');
 const fetch = require('node-fetch');
+const createError = require('http-errors');
 const requestUtils = require('../utils/requestUtils');
 const configs = require('../config')();
 
 const mathResolverServiceUrl = url.format(configs.services.mathResolverService.url);
 
-const validate = async ({ context, problemInput, type }) => {
-  const validatePath = configs.services.mathResolverService.paths.validate;
-  const fullPath = `${mathResolverServiceUrl}${validatePath}`;
+const evaluate = async ({ context, problemInput, type }) => {
+  const evaluatePath = configs.services.mathResolverService.paths.evaluate;
+  const fullPath = `${mathResolverServiceUrl}${evaluatePath}`;
 
   const response = await fetch(fullPath, {
     method: 'post',
@@ -21,7 +22,14 @@ const validate = async ({ context, problemInput, type }) => {
     }
   });
 
-  return requestUtils.processResponse(response);
+  try {
+    return requestUtils.processResponse(response);
+  } catch (e) {
+    if (e.status === 400) {
+      throw createError(400, { message: 'Ejercicio mal formado' });
+    }
+    throw e;
+  }
 };
 
 const generateMathTree = async ({ context, problemInput, type }) => {
@@ -36,7 +44,7 @@ const generateMathTree = async ({ context, problemInput, type }) => {
 
   const response = await fetch(fullPath, {
     method: 'post',
-    body: JSON.stringify({ problem_input: problemInput, type, theorems }),
+    body: JSON.stringify({ problem_input: problemInput, type, theorems: JSON.parse(theorems) }),
     headers: {
       authorization: context.accessToken,
       'Content-Type': 'application/json'
@@ -67,19 +75,19 @@ const resolve = async ({
     }
   });
 
-  try {
+  if (response.status <= 300) {
     return requestUtils.processResponse(response);
-  } catch (err) {
-    console.log('Error while trying to resolve exercise', err);
-
-    if (NODE_ENV === 'dev') { // TODO: remove it
-      const possibleResponses = ['valid', 'invalid', 'valid', 'invalid', 'valid', 'invalid', 'valid', 'invalid', 'resolved'];
-      return Promise.resolve({
-        exerciseStatus: possibleResponses[Math.floor(Math.random() * possibleResponses.length)]
-      });
-    }
-    throw err;
   }
+
+  console.log('Error while trying to resolve exercise');
+
+  if (NODE_ENV === 'dev') { // TODO: remove it
+    const possibleResponses = ['valid', 'invalid', 'valid', 'invalid', 'valid', 'invalid', 'valid', 'invalid', 'resolved'];
+    return Promise.resolve({
+      exerciseStatus: possibleResponses[Math.floor(Math.random() * possibleResponses.length)]
+    });
+  }
+  throw createError(response.status, await response.json());
 };
 
 const askHelp = async ({ context, type, problemInput, stepList }) => {
@@ -108,7 +116,7 @@ const askHelp = async ({ context, type, problemInput, stepList }) => {
 
 module.exports = {
   askHelp,
+  evaluate,
   generateMathTree,
   resolve,
-  validate,
 };

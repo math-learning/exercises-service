@@ -6,7 +6,7 @@ const exerciseService = require('../services/exerciseService');
 const allowedExerciseTypes = ['derivative', 'integral'];
 
 const extractMetadata = (body) => (
-  _.pick(body, ['problemInput', 'name', 'description', 'type', 'difficulty'])
+  _.pick(body, ['problemInput', 'name', 'description', 'type', 'difficulty', 'initialHint'])
 );
 
 const validateMetadata = (metadata) => {

@@ -33,7 +33,7 @@ const mockValidateExercise = ({
   type,
   times = 1
 }) => {
-  const validatePath = configs.services.mathResolverService.paths.validate;
+  const validatePath = configs.services.mathResolverService.paths.evaluate;
 
   nock(mathResolverServiceUrl)
     .post(validatePath, { problem_input: problemInput, type })

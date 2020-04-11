@@ -1,4 +1,3 @@
-const createError = require('http-errors');
 const mathResolverClient = require('../clients/mathResolverClient');
 const exercisesDB = require('../databases/exercisesDb');
 const usersService = require('../services/usersService');
@@ -10,18 +9,11 @@ const usersService = require('../services/usersService');
 const create = async ({
   context, guideId, courseId, exerciseMetadata
 }) => {
-  try {
-    await mathResolverClient.validate({
-      context,
-      problemInput: exerciseMetadata.problemInput,
-      type: exerciseMetadata.type
-    });
-  } catch (e) {
-    if (e.status === 400) {
-      throw createError(400, { message: 'invalid exercise' });
-    }
-    throw e;
-  }
+  await mathResolverClient.evaluate({
+    context,
+    problemInput: exerciseMetadata.problemInput,
+    type: exerciseMetadata.type
+  });
 
   // adding exercise template
   const createdExercise = await exercisesDB.createExercise({
@@ -50,7 +42,6 @@ const create = async ({
     exerciseId: createdExercise.exerciseId,
     userId: context.user.userId
   });
-
 
   // generate math tree (Note that this action will be async)
   generateMathTree({

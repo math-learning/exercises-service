@@ -58,7 +58,7 @@ router.put('/courses/:courseId/guides/:guideId/user/exercises/:exerciseId', cour
 router.delete('/courses/:courseId/guides/:guideId/exercises/:exerciseId/step', courseValidatorMiddleware, resolutionController.removeStep);
 router.post('/courses/:courseId/guides/:guideId/exercises/:exerciseId/resolve', courseValidatorMiddleware, resolutionController.resolve);
 router.put('/courses/:courseId/guides/:guideId/exercises/:exerciseId/deliver', courseValidatorMiddleware, resolutionController.deliver);
-
+router.post('/courses/:courseId/guides/:guideId/exercises/evaluate', courseValidatorMiddleware, resolutionController.evaluate);
 // router.post('/courses/:courseId/guides/:guideId/exercises/:exerciseId/help', resolutionController.askHelp);
 
 // Statistics

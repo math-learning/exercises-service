@@ -38,20 +38,24 @@ describe('Integration exercises tests', () => {
       name: 'derivada',
       description: 'calcula la derivada',
       type: 'derivative',
-      difficulty: 'easy'
+      difficulty: 'easy',
+      initialHint: null,
     };
     integrateEx = {
       problemInput: 'int',
       name: 'integrala',
       description: 'calcula la integrate',
       type: 'integral',
-      difficulty: 'easy'
+      difficulty: 'easy',
+      initialHint: null,
     };
+
+    mocks.mockGenerateMathTree({ status: 404 });
 
     return cleanDb();
   });
 
-  after(() => cleanDb());
+  after(() => cleanDb()); // TODO: clean nocks after
 
   describe('Creating derivative exercise (by the professor)', () => {
     let createExerciseResponse;
@@ -76,7 +80,6 @@ describe('Integration exercises tests', () => {
       mocks.mockValidateExercise({
         courseId, guideId, ...derivativeEx
       });
-      mocks.mockGenerateMathTree({ status: 404 });
 
       createExerciseResponse = await requests.createExercise({
         exercise: derivativeEx, courseId, guideId, token
@@ -111,7 +114,7 @@ describe('Integration exercises tests', () => {
     });
 
     it('status is bad request', () => assert.equal(errorResponse.status, 400));
-    it('message describe.skips the error', () => assert.equal(errorResponse.body.message, 'Invalid exercise type'));
+    it('message describes the error', () => assert.equal(errorResponse.body.message, 'Invalid exercise type'));
   });
 
   describe('Error: Creating an invalid exercise (not sending all the properties)', () => {
@@ -134,7 +137,7 @@ describe('Integration exercises tests', () => {
     });
 
     it('status is bad request', () => assert.equal(errorResponse.status, 400));
-    it('message describe.skips the error', () => assert.equal(errorResponse.body.message, 'problemInput, name, type or difficulty have not been provided'));
+    it('message describes the error', () => assert.equal(errorResponse.body.message, 'problemInput, name, type or difficulty have not been provided'));
   });
 
   describe('Error: when the course does not exist', () => {
@@ -201,7 +204,6 @@ describe('Integration exercises tests', () => {
       mocks.mockValidateExercise({
         courseId, guideId, ...integrateEx
       });
-      mocks.mockGenerateMathTree({ status: 404 });
 
       createExerciseResponse = await requests.createExercise({
         exercise: integrateEx, courseId, guideId, token
@@ -270,7 +272,7 @@ describe('Integration exercises tests', () => {
     });
 
     it('status is OK', () => assert.equal(errorResponse.status, 404));
-    it('message describe.skips the error', () => assert.equal(errorResponse.body.message, 'Exercise not found'));
+    it('message describes the error', () => assert.equal(errorResponse.body.message, 'Exercise not found'));
   });
 
   describe('Listing updated exercises (by the professor)', () => {

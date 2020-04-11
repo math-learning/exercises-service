@@ -12,6 +12,7 @@ const commonColumns = [
   'problem_input',
   'name',
   'description',
+  'initial_hint',
   'type',
   'difficulty',
   'pipeline_status',

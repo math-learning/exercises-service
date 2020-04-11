@@ -31,7 +31,7 @@ module.exports = {
         port: '5000'
       },
       paths: {
-        validate: '/validate',
+        evaluate: '/validations/evaluate',
         resolve: '/resolve',
         mathTree: '/results/solution-tree',
         help: '/help',

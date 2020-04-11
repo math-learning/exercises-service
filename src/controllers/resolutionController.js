@@ -60,6 +60,18 @@ const deliver = async (req, res) => {
 };
 
 /**
+ * Evaluate exercise
+ *
+ */
+const evaluate = async (req, res) => {
+  const { problemInput, type } = req.body;
+
+  const resolution = await resolutionService.evaluate({ context: req.context, problemInput, type });
+
+  return res.status(200).json(resolution);
+};
+
+/**
  * Remove step from exercise.
  *
  */
@@ -99,6 +111,7 @@ const askHelp = async (req, res) => {
 module.exports = expressify({
   askHelp,
   deliver,
+  evaluate,
   removeStep,
   resolve
 });

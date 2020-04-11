@@ -16,6 +16,7 @@ exports.up = (knex) => {
       problem_input   TEXT NOT NULL,
       name            CHARACTER VARYING(64) NOT NULL,
       description     CHARACTER VARYING(64),
+      initial_hint    CHARACTER VARYING(256),
       type            type NOT NULL,
       difficulty      difficulty NOT NULL,
       pipeline_status pipeline_status NOT NULL DEFAULT 'waiting',

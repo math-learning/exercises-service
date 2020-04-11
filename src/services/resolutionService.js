@@ -138,10 +138,18 @@ const deliver = async ({
   });
 };
 
+/**
+ * Evaluate exercise
+ *
+ */
+const evaluate = async ({ context, problemInput, type }) => (
+  mathResolverClient.evaluate({ context, problemInput, type })
+);
 
 module.exports = {
   askHelp,
   deliver,
+  evaluate,
   removeStep,
   resolve
 };
