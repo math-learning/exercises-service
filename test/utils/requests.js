@@ -236,6 +236,26 @@ const getExerciseStatistics = async ({ token, courseId }) => {
   return { status: response.status, body: await response.json() };
 };
 
+const evaluateExercise = async ({
+  token,
+  courseId,
+  guideId,
+  exercise
+}) => {
+  const evaluateExUrl = `${baseUrl}/courses/${courseId}/guides/${guideId}/exercises/evaluate`;
+
+  const response = await fetch(`${evaluateExUrl}`, {
+    method: 'post',
+    body: JSON.stringify(exercise),
+    headers: {
+      authorization: token,
+      'Content-Type': 'application/json'
+    }
+  });
+
+  return { status: response.status, body: await response.json() };
+};
+
 
 function errorWrapper(funct) {
   return function inner(...args) {
@@ -250,17 +270,18 @@ function errorWrapper(funct) {
 module.exports = {
   addUser: errorWrapper(addUser),
   createExercise: errorWrapper(createExercise),
-  deliverExercise: errorWrapper(deliverExercise),
-  removeExercise: errorWrapper(removeExercise),
-  listExercises: errorWrapper(listExercises),
-  updateExercise: errorWrapper(updateExercise),
-  getUserExercise: errorWrapper(getUserExercise),
-  getSpecificUserExercise: errorWrapper(getSpecificUserExercise),
-  getExerciseStatistics: errorWrapper(getExerciseStatistics),
-  listUserExercises: errorWrapper(listUserExercises),
-  listSpecificUserExercises: errorWrapper(listSpecificUserExercises),
-  updateUserExercise: errorWrapper(updateUserExercise),
   deleteExerciseStep: errorWrapper(deleteExerciseStep),
+  deliverExercise: errorWrapper(deliverExercise),
+  evaluateExercise: errorWrapper(evaluateExercise),
+  getExerciseStatistics: errorWrapper(getExerciseStatistics),
+  getSpecificUserExercise: errorWrapper(getSpecificUserExercise),
+  getUserExercise: errorWrapper(getUserExercise),
+  listExercises: errorWrapper(listExercises),
+  listSpecificUserExercises: errorWrapper(listSpecificUserExercises),
+  listUserExercises: errorWrapper(listUserExercises),
+  removeExercise: errorWrapper(removeExercise),
   resolveExercise: errorWrapper(resolveExercise),
-  status
+  status,
+  updateExercise: errorWrapper(updateExercise),
+  updateUserExercise: errorWrapper(updateUserExercise),
 };

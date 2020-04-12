@@ -84,6 +84,8 @@ describe('Integration exercises tests', () => {
       createExerciseResponse = await requests.createExercise({
         exercise: derivativeEx, courseId, guideId, token
       });
+      // To wait the math tree is generated and the exercise is marked as generated
+      await new Promise((resolve) => setTimeout(resolve, 200));
     });
 
     it('status is OK', () => assert.equal(createExerciseResponse.status, 201));
@@ -161,7 +163,7 @@ describe('Integration exercises tests', () => {
 
     before(() => {
       expectedExercises = [
-        { ...derivativeEx, courseId, guideId, pipelineStatus: 'waiting' }
+        { ...derivativeEx, courseId, guideId, pipelineStatus: 'failed' }
       ];
     });
 
@@ -209,6 +211,8 @@ describe('Integration exercises tests', () => {
         exercise: integrateEx, courseId, guideId, token
       });
       integrateExerciseId = createExerciseResponse.body.exerciseId;
+      // To wait the math tree is generated and the exercise is marked as generated
+      await new Promise((resolve) => setTimeout(resolve, 200));
     });
 
     it('status is OK', () => assert.equal(createExerciseResponse.status, 201));
@@ -282,10 +286,10 @@ describe('Integration exercises tests', () => {
     before(() => {
       expectedExercises = [
         {
-          ...derivativeEx, courseId, guideId, pipelineStatus: 'waiting'
+          ...derivativeEx, courseId, guideId, pipelineStatus: 'failed'
         },
         {
-          ...integrateEx, courseId, guideId, name: newName, pipelineStatus: 'waiting'
+          ...integrateEx, courseId, guideId, name: newName, pipelineStatus: 'failed'
         }
       ];
     });
@@ -349,7 +353,7 @@ describe('Integration exercises tests', () => {
     before(() => {
       expectedExercises = [
         {
-          ...derivativeEx, courseId, guideId, pipelineStatus: 'waiting'
+          ...derivativeEx, courseId, guideId, pipelineStatus: 'failed'
         }
       ];
     });

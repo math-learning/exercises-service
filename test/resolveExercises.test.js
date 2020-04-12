@@ -59,6 +59,29 @@ describe('Integration resolve exercises tests', () => {
   before(() => cleanDb());
   after(() => cleanDb());
 
+  describe('Evaluate exercise before creating', () => {
+    let expectedResponse;
+
+    before(async () => {
+      const exercise = {
+        problemInput: 'dx',
+        type: 'derivative'
+      };
+      expectedResponse = { result: 'result' };
+
+      mocks.mockAuth({ profile: professorProfile });
+      mocks.mockGetCourse({ courseId, course });
+      mocks.mockValidateExercise({ courseId, guideId, ...exercise, response: expectedResponse });
+
+      response = await requests.evaluateExercise({
+        exercise, courseId, guideId, token
+      });
+    });
+
+    it('exercise added correctly', () => assert.equal(response.status, 200));
+    it('exercise added correctly', () => assert.deepEqual(response.body, expectedResponse));
+  });
+
   describe('Adding an exercise to course', () => {
     let derivResponse;
 
@@ -83,7 +106,7 @@ describe('Integration resolve exercises tests', () => {
       derivativeExerciseId = derivResponse.body.exerciseId;
 
       // To wait the math tree is generated and the exercise is marked as generated
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 200));
     });
 
     it('exercise added correctly', () => assert.equal(derivResponse.status, 201));

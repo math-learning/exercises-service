@@ -31,14 +31,15 @@ const mockValidateExercise = ({
   status = 200,
   problemInput,
   type,
-  times = 1
+  times = 1,
+  response = {}
 }) => {
   const validatePath = configs.services.mathResolverService.paths.evaluate;
 
   nock(mathResolverServiceUrl)
     .post(validatePath, { problem_input: problemInput, type })
     .times(times)
-    .reply(status, {});
+    .reply(status, response);
 };
 
 const mockResolveExercise = ({

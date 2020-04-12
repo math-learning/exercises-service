@@ -1,6 +1,7 @@
 const mathResolverClient = require('../clients/mathResolverClient');
 const exercisesDB = require('../databases/exercisesDb');
 const usersService = require('../services/usersService');
+const logger = require('../utils/logger.js');
 
 /**
  * Create exercise.
@@ -59,13 +60,21 @@ const create = async ({
 const generateMathTree = async ({
   context, guideId, courseId, exerciseId, problemInput, type
 }) => {
-  const mathTree = await mathResolverClient.generateMathTree({ context, problemInput, type });
+  let metadataToUpdate;
+  try {
+    const mathTree = await mathResolverClient.generateMathTree({ context, problemInput, type });
+    metadataToUpdate = { mathTree: JSON.stringify(mathTree), pipelineStatus: 'generated' };
+  } catch (err) {
+    logger.onLog(`Error while generating math tree: ${courseId}, ${guideId}, ${exerciseId}`);
+
+    metadataToUpdate = { pipelineStatus: 'failed' };
+  }
 
   return exercisesDB.updateExercise({
     courseId,
     guideId,
     exerciseId,
-    exerciseMetadata: { mathTree: JSON.stringify(mathTree), pipelineStatus: 'generated' }
+    exerciseMetadata: metadataToUpdate
   });
 };
 
