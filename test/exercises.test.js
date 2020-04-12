@@ -39,7 +39,7 @@ describe('Integration exercises tests', () => {
       description: 'calcula la derivada',
       type: 'derivative',
       difficulty: 'easy',
-      initialHint: null,
+      initialHint: 'try using some theoreme',
     };
     integrateEx = {
       problemInput: 'int',
