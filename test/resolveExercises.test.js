@@ -18,6 +18,7 @@ describe('Integration resolve exercises tests', () => {
 
   let derivativeExerciseId;
   let derivativeExercise;
+  let derivativeExerciseToCreate;
 
   let firstExpression;
   let secondExpression;
@@ -53,6 +54,21 @@ describe('Integration resolve exercises tests', () => {
       professors: [professorProfile],
       users: [professorProfile, studentProfile]
     };
+    derivativeExerciseToCreate = {
+      problemInput: 'x',
+      name: exerciseName,
+      description: 'calcula la derivada',
+      type: 'derivative',
+      difficulty: 'easy',
+      initialHint: null
+    };
+    derivativeExercise = {
+      ...derivativeExerciseToCreate,
+      courseId,
+      guideId,
+      pipelineStatus: 'generated',
+      problemInput: `\\frac{d(${derivativeExerciseToCreate.problemInput})}{dx}`
+    };
     mathTree = { tree: 'input' };
   });
 
@@ -64,7 +80,7 @@ describe('Integration resolve exercises tests', () => {
 
     before(async () => {
       const exercise = {
-        problemInput: 'dx',
+        problemInput: 'x',
         type: 'derivative'
       };
       expectedResponse = { result: 'result' };
@@ -86,22 +102,13 @@ describe('Integration resolve exercises tests', () => {
     let derivResponse;
 
     before(async () => {
-      derivativeExercise = {
-        problemInput: 'dx',
-        name: exerciseName,
-        description: 'calcula la derivada',
-        type: 'derivative',
-        difficulty: 'easy',
-        initialHint: null
-      };
-
       mocks.mockAuth({ profile: professorProfile });
       mocks.mockGetCourse({ courseId, course });
-      mocks.mockValidateExercise({ courseId, guideId, ...derivativeExercise });
+      mocks.mockValidateExercise({ courseId, guideId, ...derivativeExerciseToCreate });
       mocks.mockGenerateMathTree({ response: mathTree });
 
       derivResponse = await requests.createExercise({
-        exercise: derivativeExercise, courseId, guideId, token
+        exercise: derivativeExerciseToCreate, courseId, guideId, token
       });
       derivativeExerciseId = derivResponse.body.exerciseId;
 

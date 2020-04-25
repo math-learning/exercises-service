@@ -16,12 +16,17 @@ const create = async ({
     type: exerciseMetadata.type
   });
 
+  // adding d()/dx to the problem input
+  const problemInput = exerciseMetadata.type === 'derivative'
+    ? `\\frac{d(${exerciseMetadata.problemInput})}{dx}`
+    : exerciseMetadata.problemInput;
+
   // adding exercise template
   const createdExercise = await exercisesDB.createExercise({
     context,
     guideId,
     courseId,
-    exerciseMetadata
+    exerciseMetadata: { ...exerciseMetadata, problemInput }
   });
 
   // adding exercise to existing professors
@@ -50,7 +55,7 @@ const create = async ({
     guideId,
     courseId,
     exerciseId: createdExercise.exerciseId,
-    problemInput: exerciseMetadata.problemInput,
+    problemInput,
     type: exerciseMetadata.type
   });
 

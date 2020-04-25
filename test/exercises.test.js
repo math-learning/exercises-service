@@ -11,9 +11,11 @@ describe('Integration exercises tests', () => {
   let course;
   let professorProfile;
 
-  let derivativeEx;
-  let integrateEx;
+  let derivativeExercise;
+  let integrateExercise;
   let integrateExerciseId;
+  let integrateExerciseToCreate;
+  let derivativeExerciseToCreate;
 
   before(() => {
     courseId = 'course-id';
@@ -33,21 +35,34 @@ describe('Integration exercises tests', () => {
       professors: [professorProfile],
       users: [professorProfile]
     };
-    derivativeEx = {
-      problemInput: 'dx',
+    derivativeExerciseToCreate = {
+      problemInput: 'x',
       name: 'derivada',
       description: 'calcula la derivada',
       type: 'derivative',
       difficulty: 'easy',
       initialHint: 'try using some theoreme',
     };
-    integrateEx = {
+    derivativeExercise = {
+      ...derivativeExerciseToCreate,
+      courseId,
+      guideId,
+      pipelineStatus: 'failed',
+      problemInput: `\\frac{d(${derivativeExerciseToCreate.problemInput})}{dx}`
+    };
+    integrateExerciseToCreate = {
       problemInput: 'int',
       name: 'integrala',
       description: 'calcula la integrate',
       type: 'integral',
       difficulty: 'easy',
       initialHint: null,
+    };
+    integrateExercise = {
+      ...integrateExerciseToCreate,
+      courseId,
+      guideId,
+      pipelineStatus: 'failed'
     };
 
     mocks.mockGenerateMathTree({ status: 404 });
@@ -63,7 +78,7 @@ describe('Integration exercises tests', () => {
 
     before(async () => {
       expectedExercise = {
-        ...derivativeEx,
+        ...derivativeExercise,
         guideId,
         courseId,
         state: 'incompleted',
@@ -78,11 +93,11 @@ describe('Integration exercises tests', () => {
       mocks.mockAuth({ profile: professorProfile });
       mocks.mockGetCourse({ courseId, course });
       mocks.mockValidateExercise({
-        courseId, guideId, ...derivativeEx
+        courseId, guideId, ...derivativeExerciseToCreate
       });
 
       createExerciseResponse = await requests.createExercise({
-        exercise: derivativeEx, courseId, guideId, token
+        exercise: derivativeExerciseToCreate, courseId, guideId, token
       });
       // To wait the math tree is generated and the exercise is marked as generated
       await new Promise((resolve) => setTimeout(resolve, 200));
@@ -106,7 +121,7 @@ describe('Integration exercises tests', () => {
       mocks.mockGetCourse({ courseId, course });
 
       exercise = {
-        ...derivativeEx,
+        ...derivativeExercise,
         type: 'falopa'
       };
 
@@ -150,7 +165,7 @@ describe('Integration exercises tests', () => {
       mocks.mockGetCourse({ courseId, course, status: 404 });
 
       errorResponse = await requests.createExercise({
-        exercise: derivativeEx, courseId, guideId, token
+        exercise: derivativeExercise, courseId, guideId, token
       });
     });
 
@@ -162,9 +177,7 @@ describe('Integration exercises tests', () => {
     let expectedExercises;
 
     before(() => {
-      expectedExercises = [
-        { ...derivativeEx, courseId, guideId, pipelineStatus: 'failed' }
-      ];
+      expectedExercises = [derivativeExercise];
     });
 
     before(async () => {
@@ -189,7 +202,7 @@ describe('Integration exercises tests', () => {
 
     before(async () => {
       expectedExercise = {
-        ...integrateEx,
+        ...integrateExercise,
         guideId,
         courseId,
         state: 'incompleted',
@@ -204,11 +217,11 @@ describe('Integration exercises tests', () => {
       mocks.mockAuth({ profile: professorProfile });
       mocks.mockGetCourse({ courseId, course });
       mocks.mockValidateExercise({
-        courseId, guideId, ...integrateEx
+        courseId, guideId, ...integrateExerciseToCreate
       });
 
       createExerciseResponse = await requests.createExercise({
-        exercise: integrateEx, courseId, guideId, token
+        exercise: integrateExercise, courseId, guideId, token
       });
       integrateExerciseId = createExerciseResponse.body.exerciseId;
       // To wait the math tree is generated and the exercise is marked as generated
@@ -230,7 +243,7 @@ describe('Integration exercises tests', () => {
 
     before(async () => {
       updatedExercise = {
-        ...integrateEx,
+        ...integrateExercise,
         name: newName
       };
     });
@@ -257,7 +270,7 @@ describe('Integration exercises tests', () => {
 
     before(async () => {
       updatedExercise = {
-        ...integrateEx,
+        ...integrateExercise,
         name: newName
       };
     });
@@ -285,12 +298,8 @@ describe('Integration exercises tests', () => {
 
     before(() => {
       expectedExercises = [
-        {
-          ...derivativeEx, courseId, guideId, pipelineStatus: 'failed'
-        },
-        {
-          ...integrateEx, courseId, guideId, name: newName, pipelineStatus: 'failed'
-        }
+        derivativeExercise,
+        { ...integrateExercise, name: newName }
       ];
     });
 
@@ -351,11 +360,7 @@ describe('Integration exercises tests', () => {
     let expectedExercises;
 
     before(() => {
-      expectedExercises = [
-        {
-          ...derivativeEx, courseId, guideId, pipelineStatus: 'failed'
-        }
-      ];
+      expectedExercises = [derivativeExercise];
     });
 
     before(async () => {

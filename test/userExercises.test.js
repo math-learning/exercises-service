@@ -16,6 +16,8 @@ describe('Integration user exercises tests', () => {
   let integrateExerciseId;
   let derivativeExercise;
   let integrateExercise;
+  let derivativeExerciseToCreate;
+  let integrateExerciseToCreate;
 
   let response;
 
@@ -43,6 +45,37 @@ describe('Integration user exercises tests', () => {
       professors: [professorProfile],
       users: [professorProfile, studentProfile]
     };
+    derivativeExerciseToCreate = {
+      problemInput: 'x',
+      name: 'derivada',
+      description: 'calcula la derivada',
+      type: 'derivative',
+      difficulty: 'easy',
+      pipelineStatus: 'generated',
+      initialHint: null,
+    };
+    derivativeExercise = {
+      ...derivativeExerciseToCreate,
+      courseId,
+      guideId,
+      pipelineStatus: 'generated',
+      problemInput: `\\frac{d(${derivativeExerciseToCreate.problemInput})}{dx}`
+    };
+    integrateExerciseToCreate = {
+      problemInput: 'xx',
+      name: 'integrate',
+      description: 'calcula la integral',
+      type: 'integral',
+      difficulty: 'easy',
+      pipelineStatus: 'generated',
+      initialHint: null,
+    };
+    integrateExercise = {
+      ...integrateExerciseToCreate,
+      courseId,
+      guideId,
+      pipelineStatus: 'generated'
+    };
 
     mocks.mockGenerateMathTree({ status: 200, times: 2 });
   });
@@ -58,32 +91,14 @@ describe('Integration user exercises tests', () => {
       mocks.mockAuth({ times: 2, profile: professorProfile });
       mocks.mockGetCourse({ courseId, course, times: 2 });
 
-      derivativeExercise = {
-        problemInput: 'dx',
-        name: 'derivada',
-        description: 'calcula la derivada',
-        type: 'derivative',
-        difficulty: 'easy',
-        pipelineStatus: 'generated',
-        initialHint: null,
-      };
-      integrateExercise = {
-        problemInput: 'dx',
-        name: 'integrate',
-        description: 'calcula la integral',
-        type: 'integral',
-        difficulty: 'easy',
-        pipelineStatus: 'generated',
-        initialHint: null,
-      };
-      mocks.mockValidateExercise({ courseId, guideId, ...derivativeExercise });
-      mocks.mockValidateExercise({ courseId, guideId, ...integrateExercise });
+      mocks.mockValidateExercise({ courseId, guideId, ...derivativeExerciseToCreate });
+      mocks.mockValidateExercise({ courseId, guideId, ...integrateExerciseToCreate });
 
       derivResponse = await requests.createExercise({
-        exercise: derivativeExercise, courseId, guideId, token
+        exercise: derivativeExerciseToCreate, courseId, guideId, token
       });
       integResponse = await requests.createExercise({
-        exercise: integrateExercise, courseId, guideId, token
+        exercise: integrateExerciseToCreate, courseId, guideId, token
       });
       derivativeExerciseId = derivResponse.body.exerciseId;
       integrateExerciseId = integResponse.body.exerciseId;
@@ -102,16 +117,12 @@ describe('Integration user exercises tests', () => {
     before(async () => {
       expectedUserExercises = [{
         ...derivativeExercise,
-        guideId,
-        courseId,
         exerciseId: derivativeExerciseId,
         userId: professorProfile.userId,
         state: 'incompleted',
         calification: null
       }, {
         ...integrateExercise,
-        guideId,
-        courseId,
         exerciseId: integrateExerciseId,
         userId: professorProfile.userId,
         state: 'incompleted',
@@ -177,16 +188,12 @@ describe('Integration user exercises tests', () => {
       expectedUserExercises = [{
         ...derivativeExercise,
         userId,
-        guideId,
-        courseId,
         exerciseId: derivativeExerciseId,
         state: 'incompleted',
         calification: null
       }, {
         ...integrateExercise,
         userId,
-        guideId,
-        courseId,
         exerciseId: integrateExerciseId,
         state: 'incompleted',
         calification: null
@@ -214,8 +221,6 @@ describe('Integration user exercises tests', () => {
       expectedUserExercise = {
         ...derivativeExercise,
         userId,
-        guideId,
-        courseId,
         exerciseId: derivativeExerciseId,
         state: 'incompleted',
         calification: null,
@@ -287,8 +292,6 @@ describe('Integration user exercises tests', () => {
       expectedUserExercise = {
         ...derivativeExercise,
         userId,
-        guideId,
-        courseId,
         exerciseId: derivativeExerciseId,
         state: 'incompleted',
         calification: 10,
@@ -340,8 +343,6 @@ describe('Integration user exercises tests', () => {
       expectedUserExercises = [{
         ...integrateExercise,
         userId,
-        guideId,
-        courseId,
         exerciseId: integrateExerciseId,
         state: 'incompleted',
         calification: null

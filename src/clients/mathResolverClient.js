@@ -33,18 +33,13 @@ const evaluate = async ({ context, problemInput, type }) => {
 };
 
 const generateMathTree = async ({ context, problemInput, type }) => {
-  let theorems = [];
-  if (type === 'derivative') {
-    theorems = fs.readFileSync(path.resolve(__dirname, './derivative-theorems.json'));
-  } else if (type === 'integral') {
-    theorems = fs.readFileSync(path.resolve(__dirname, './integral-theorems.json'));
-  }
   const mathTreePath = configs.services.mathResolverService.paths.mathTree;
   const fullPath = `${mathResolverServiceUrl}${mathTreePath}`;
+  const theorems = getTheorems({ type });
 
   const response = await fetch(fullPath, {
     method: 'post',
-    body: JSON.stringify({ problem_input: problemInput, type, theorems: JSON.parse(theorems) }),
+    body: JSON.stringify({ problem_input: problemInput, type, theorems }),
     headers: {
       authorization: context.accessToken,
       'Content-Type': 'application/json'
@@ -59,14 +54,16 @@ const resolve = async ({
 }) => {
   const resolvePath = configs.services.mathResolverService.paths.resolve;
   const fullPath = `${mathResolverServiceUrl}${resolvePath}`;
+  const theorems = getTheorems({ type });
 
   const response = await fetch(fullPath, {
     method: 'post',
     body: JSON.stringify({
       type,
       problem_input: problemInput,
-      step_list: stepList,
+      step_list: JSON.stringify(stepList),
       math_tree: mathTree,
+      theorems,
       current_expression: currentExpression
     }),
     headers: {
@@ -112,6 +109,17 @@ const askHelp = async ({ context, type, problemInput, stepList }) => {
   });
 
   return requestUtils.processResponse(response);
+};
+
+const getTheorems = ({ type }) => {
+  let theorems = [];
+  if (type === 'derivative') {
+    theorems = fs.readFileSync(path.resolve(__dirname, './derivative-theorems.json'));
+  } else if (type === 'integral') {
+    theorems = fs.readFileSync(path.resolve(__dirname, './integral-theorems.json'));
+  }
+
+  return JSON.parse(theorems);
 };
 
 module.exports = {
