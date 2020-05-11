@@ -3,6 +3,7 @@ const exerciseErrors = require('../exercises_errors');
 exports.seed = async (knex) => {
   const currentExercises = await knex('exercises').select();
   const currentStudentExercises = await knex('student_exercises').select();
+  const currentErrorCount = await knex('exercise_error_count').select();
 
   // Professors in users service
   const lucas = {
@@ -296,5 +297,7 @@ exports.seed = async (knex) => {
     await knex('student_exercises').insert(userExercises);
   }
 
-  await exerciseErrors.addErrorsToExistingExercises(knex);
+  if (!currentErrorCount.length) {
+    await exerciseErrors.addErrorsToExistingExercises(knex);
+  }
 };

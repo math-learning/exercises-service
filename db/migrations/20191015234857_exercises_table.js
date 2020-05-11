@@ -41,10 +41,10 @@ exports.up = (knex) => {
       user_id      CHARACTER VARYING(64) NOT NULL,
       guide_id     CHARACTER VARYING(128) NOT NULL,
       course_id    CHARACTER VARYING(128) NOT NULL,
-      exercise_id  CHARACTER VARYING(64) NOT NULL,
+      exercise_id  CHARACTER VARYING(128) NOT NULL,
 
       count        INT DEFAULT 0,
-      PRIMARY KEY  (user_id, exercise_id, guide_id, course_id)
+      PRIMARY KEY  (user_id, exercise_id, course_id, guide_id)
     );
   `;
 

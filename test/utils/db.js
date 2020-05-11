@@ -15,6 +15,7 @@ const sanitizeResponse = (response) => {
 const cleanDb = async () => {
   await knex('exercises').del();
   await knex('student_exercises').del();
+  await knex('exercise_error_count').del();
 };
 
 module.exports = {

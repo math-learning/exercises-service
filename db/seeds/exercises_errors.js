@@ -2,7 +2,8 @@ const addErrorsToExistingExercises = async (knex) => {
   const difErrorCounts = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   const errorCountEntries = [];
 
-  const userExercises = await knex('student_exercises').select();
+  const userExercises = await knex('student_exercises')
+    .distinct('user_id', 'course_id', 'guide_id', 'exercise_id');
 
   for (const exercise of userExercises) { // eslint-disable-line no-restricted-syntax
     if (Math.random() < 0.4) {
