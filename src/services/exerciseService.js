@@ -29,14 +29,14 @@ const create = async ({
     exerciseMetadata: { ...exerciseMetadata, problemInput }
   });
 
-  // adding exercise to existing professors
+  // adding exercise to existing users
   const { course } = context;
-  const professorIds = course.professors.map((professor) => professor.userId);
+  const userIds = course.users.map((user) => user.userId);
   await usersService.addingExercisesToUsers({
     context,
     guideId,
     courseId,
-    userIds: professorIds,
+    userIds,
     exerciseIds: [createdExercise.exerciseId]
   });
 

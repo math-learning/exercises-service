@@ -83,31 +83,24 @@ describe('Integration user exercises tests', () => {
   before(() => cleanDb());
   after(() => cleanDb());
 
-  describe('Adding exercises to course (int + deriv)', () => {
-    let derivResponse;
+  describe('Adding exercises to course (int)', () => {
     let integResponse;
 
     before(async () => {
-      mocks.mockAuth({ times: 2, profile: professorProfile });
-      mocks.mockGetCourse({ courseId, course, times: 2 });
+      mocks.mockAuth({ times: 1, profile: professorProfile });
+      mocks.mockGetCourse({ courseId, course, times: 1 });
 
-      mocks.mockValidateExercise({ courseId, guideId, ...derivativeExerciseToCreate });
       mocks.mockValidateExercise({ courseId, guideId, ...integrateExerciseToCreate });
 
-      derivResponse = await requests.createExercise({
-        exercise: derivativeExerciseToCreate, courseId, guideId, token
-      });
       integResponse = await requests.createExercise({
         exercise: integrateExerciseToCreate, courseId, guideId, token
       });
-      derivativeExerciseId = derivResponse.body.exerciseId;
       integrateExerciseId = integResponse.body.exerciseId;
 
       // To wait the math tree is generated and the exercise is marked as generated
       await new Promise((resolve) => setTimeout(resolve, 200));
     });
 
-    it('exercise added correctly', () => assert.equal(derivResponse.status, 201));
     it('exercise added correctly', () => assert.equal(integResponse.status, 201));
   });
 
@@ -116,12 +109,6 @@ describe('Integration user exercises tests', () => {
 
     before(async () => {
       expectedUserExercises = [{
-        ...derivativeExercise,
-        exerciseId: derivativeExerciseId,
-        userId: professorProfile.userId,
-        state: 'incompleted',
-        calification: null
-      }, {
         ...integrateExercise,
         exerciseId: integrateExerciseId,
         userId: professorProfile.userId,
@@ -170,7 +157,7 @@ describe('Integration user exercises tests', () => {
     it('status is OK', () => assert.equal(errorResponse.status, 404));
   });
 
-  describe('Adding user exercises', () => {
+  describe('Adding user', () => {
     before(async () => {
       mocks.mockAuth({ profile: studentProfile });
       mocks.mockGetCourse({ courseId, course });
@@ -181,20 +168,41 @@ describe('Integration user exercises tests', () => {
     it('status is OK', () => assert.equal(response.status, 201));
   });
 
+  describe('Adding exercises to course (deriv)', () => {
+    let derivResponse;
+
+    before(async () => {
+      mocks.mockAuth({ times: 1, profile: professorProfile });
+      mocks.mockGetCourse({ courseId, course, times: 1 });
+
+      mocks.mockValidateExercise({ courseId, guideId, ...derivativeExerciseToCreate });
+
+      derivResponse = await requests.createExercise({
+        exercise: derivativeExerciseToCreate, courseId, guideId, token
+      });
+      derivativeExerciseId = derivResponse.body.exerciseId;
+
+      // To wait the math tree is generated and the exercise is marked as generated
+      await new Promise((resolve) => setTimeout(resolve, 200));
+    });
+
+    it('exercise added correctly', () => assert.equal(derivResponse.status, 201));
+  });
+
   describe('Asking user exercises', () => {
     let expectedUserExercises;
 
     before(async () => {
       expectedUserExercises = [{
-        ...derivativeExercise,
-        userId,
-        exerciseId: derivativeExerciseId,
-        state: 'incompleted',
-        calification: null
-      }, {
         ...integrateExercise,
         userId,
         exerciseId: integrateExerciseId,
+        state: 'incompleted',
+        calification: null
+      }, {
+        ...derivativeExercise,
+        userId,
+        exerciseId: derivativeExerciseId,
         state: 'incompleted',
         calification: null
       }];
@@ -202,6 +210,39 @@ describe('Integration user exercises tests', () => {
 
     before(async () => {
       mocks.mockAuth({ profile: studentProfile });
+      mocks.mockGetCourse({ courseId, course });
+
+      response = await requests.listUserExercises({ courseId, guideId, token });
+    });
+
+    it('status is OK', () => assert.equal(response.status, 200));
+
+    it('should retrieve the created exercises', () => {
+      assert.deepEqual(sanitizeResponse(response.body), expectedUserExercises);
+    });
+  });
+
+  describe('Asking (professor) user exercises', () => {
+    let expectedUserExercises;
+
+    before(async () => {
+      expectedUserExercises = [{
+        ...integrateExercise,
+        exerciseId: integrateExerciseId,
+        userId: professorProfile.userId,
+        state: 'incompleted',
+        calification: null
+      }, {
+        ...derivativeExercise,
+        exerciseId: derivativeExerciseId,
+        userId: professorProfile.userId,
+        state: 'incompleted',
+        calification: null
+      }];
+    });
+
+    before(async () => {
+      mocks.mockAuth({ profile: professorProfile });
       mocks.mockGetCourse({ courseId, course });
 
       response = await requests.listUserExercises({ courseId, guideId, token });
