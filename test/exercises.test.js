@@ -131,7 +131,7 @@ describe('Integration exercises tests', () => {
     });
 
     it('status is bad request', () => assert.equal(errorResponse.status, 400));
-    it('message describes the error', () => assert.equal(errorResponse.body.message, 'Invalid exercise type'));
+    it('message describe.skips the error', () => assert.equal(errorResponse.body.message, 'Invalid exercise type'));
   });
 
   describe('Error: Creating an invalid exercise (not sending all the properties)', () => {

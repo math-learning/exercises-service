@@ -33,8 +33,8 @@ describe('Integration resolve exercises tests', () => {
     newName = 'new name';
     exerciseName = 'derivada';
     newProblemInput = '2x + 1';
-    firstExpression = '2x';
-    secondExpression = '2';
+    firstExpression = { expression: '2x', variables: [] };
+    secondExpression = { expression: '2', variables: [] };
     studentProfile = {
       userId: 'student',
       name: 'pedro',

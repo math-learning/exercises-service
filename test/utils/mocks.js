@@ -1,7 +1,5 @@
 const nock = require('nock');
 const url = require('url');
-const fs = require('fs');
-const path = require('path');
 const configs = require('../../configs/test');
 
 const usersServiceUrl = url.format(configs.services.usersService.url);
@@ -39,7 +37,13 @@ const mockValidateExercise = ({
   const validatePath = configs.services.mathResolverService.paths.evaluate;
 
   nock(mathResolverServiceUrl)
-    .post(validatePath, { problem_input: problemInput, type })
+    .post(validatePath, {
+      problem_input: {
+        expression: problemInput,
+        variables: []
+      },
+      type
+    })
     .times(times)
     .reply(status, response);
 };
@@ -54,16 +58,17 @@ const mockResolveExercise = ({
   times = 1,
   response = { exerciseStatus: 'valid' }
 }) => {
-  const theorems = getTheorems({ type });
   const validatePath = configs.services.mathResolverService.paths.resolve;
 
   nock(mathResolverServiceUrl)
     .post(validatePath, {
       type,
-      theorems,
       math_tree: mathTree,
-      problem_input: problemInput,
-      step_list: JSON.stringify(stepList),
+      problem_input: {
+        expression: problemInput,
+        variables: []
+      },
+      step_list: stepList,
       current_expression: currentExpression
     })
     .times(times)
@@ -84,18 +89,6 @@ const mockGenerateMathTree = ({
     .times(times)
     .reply(status, response);
 };
-
-const getTheorems = ({ type }) => {
-  let theorems = [];
-  if (type === 'derivative') {
-    theorems = fs.readFileSync(path.resolve(__dirname, '../../src/clients/derivative-theorems.json'));
-  } else if (type === 'integral') {
-    theorems = fs.readFileSync(path.resolve(__dirname, '../../src/clients/integral-theorems.json'));
-  }
-
-  return JSON.parse(theorems);
-};
-
 
 module.exports = {
   mockAuth,
