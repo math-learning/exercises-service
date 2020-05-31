@@ -1,11 +1,6 @@
-const _ = require('lodash');
 const createError = require('http-errors');
 const expressify = require('expressify')();
 const resolutionService = require('../services/resolutionService');
-
-const extractExercise = (body) => (
-  _.pick(body, ['currentExpression'])
-);
 
 const validateBody = (body) => {
   if (!body.currentExpression) {
@@ -25,14 +20,14 @@ const resolve = async (req, res) => {
   } = req.params;
 
   validateBody(req.body);
-  const exercise = extractExercise(req.body);
+  const { currentExpression } = req.body;
 
   const exerciseStatus = await resolutionService.resolve({
     context: req.context,
     guideId,
     courseId,
     exerciseId,
-    exercise
+    currentExpression
   });
 
   return res.status(200).json(exerciseStatus);

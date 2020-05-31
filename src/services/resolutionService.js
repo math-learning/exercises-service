@@ -19,7 +19,7 @@ const resolve = async ({
   guideId,
   courseId,
   exerciseId,
-  exercise
+  currentExpression
 }) => {
   const { user: { userId } } = context;
   const currentExercise = await usersService.getExercise({
@@ -32,7 +32,6 @@ const resolve = async ({
   validateExerciseHasNotBeenDelivered(currentExercise);
 
   const { problemInput, type, stepList } = currentExercise;
-  const { currentExpression } = exercise;
   const { mathTree } = baseExercise;
   const parsedMathTree = JSON.parse(mathTree);
 

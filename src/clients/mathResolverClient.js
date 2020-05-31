@@ -15,7 +15,13 @@ const evaluate = async ({ context, problemInput, type }) => {
 
   const response = await fetch(fullPath, {
     method: 'post',
-    body: JSON.stringify({ problem_input: problemInput, type }),
+    body: JSON.stringify({
+      problem_input: {
+        expression: problemInput,
+        variables: []
+      },
+      type
+    }),
     headers: {
       authorization: context.accessToken,
       'Content-Type': 'application/json'
@@ -39,7 +45,14 @@ const generateMathTree = async ({ context, problemInput, type }) => {
 
   const response = await fetch(fullPath, {
     method: 'post',
-    body: JSON.stringify({ problem_input: problemInput, type, theorems }),
+    body: JSON.stringify({
+      problem_input: {
+        expression: problemInput,
+        variables: []
+      },
+      type,
+      theorems
+    }),
     headers: {
       authorization: context.accessToken,
       'Content-Type': 'application/json'
@@ -59,9 +72,12 @@ const resolve = async ({
   const response = await fetch(fullPath, {
     method: 'post',
     body: JSON.stringify({
+      problem_input: {
+        expression: problemInput,
+        variables: []
+      },
       type,
-      problem_input: problemInput,
-      step_list: JSON.stringify(stepList),
+      step_list: stepList,
       math_tree: mathTree,
       theorems,
       current_expression: currentExpression
