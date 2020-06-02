@@ -16,10 +16,13 @@ const create = async ({
     type: exerciseMetadata.type
   });
 
-  // adding d()/dx to the problem input
-  const problemInput = exerciseMetadata.type === 'derivative'
-    ? `\\frac{d(${exerciseMetadata.problemInput})}{dx}`
-    : exerciseMetadata.problemInput;
+  // adding "d()/dx" or "\int dx" to the problem input
+  let { problemInput } = exerciseMetadata;
+  if (exerciseMetadata.type === 'derivative') {
+    problemInput = `\\frac{d(${exerciseMetadata.problemInput})}{dx}`;
+  } else if (exerciseMetadata.type === 'integral') {
+    problemInput = `\\int ${exerciseMetadata.problemInput} dx`;
+  }
 
   // adding exercise template
   const createdExercise = await exercisesDB.createExercise({
