@@ -11,7 +11,7 @@
     "test:watch": "npm run test:app -- --watch",
     "test": "export NODE_ENV=test && npm run lint && nyc --reporter=html --reporter=text npm run test:app",
     "start": "export NODE_ENV=dev && npm run db:latest && npm run db:initial-state && node src/app",
-    "start:watch": "export NODE_ENV=dev && npm run db:rollback && npm run db:latest && npm run db:initial-state && nodemon src/app",
+    "start:watch": "export NODE_ENV=dev && npm run db:latest && npm run db:initial-state && nodemon src/app",
     "db:latest": "knex migrate:latest",
     "db:rollback": "knex migrate:rollback",
     "db:rollback-all": "knex migrate:rollback --all",
