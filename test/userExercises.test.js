@@ -62,7 +62,7 @@ describe('Integration user exercises tests', () => {
       problemInput: `\\frac{d(${derivativeExerciseToCreate.problemInput})}{dx}`
     };
     integrateExerciseToCreate = {
-      problemInput: 'xx',
+      problemInput: 'x^2',
       name: 'integrate',
       description: 'calcula la integral',
       type: 'integral',
@@ -74,7 +74,8 @@ describe('Integration user exercises tests', () => {
       ...integrateExerciseToCreate,
       courseId,
       guideId,
-      pipelineStatus: 'generated'
+      pipelineStatus: 'generated',
+      problemInput: `\\int ${integrateExerciseToCreate.problemInput} dx`
     };
 
     mocks.mockGenerateMathTree({ status: 200, times: 2 });

@@ -51,7 +51,7 @@ describe('Integration exercises tests', () => {
       problemInput: `\\frac{d(${derivativeExerciseToCreate.problemInput})}{dx}`
     };
     integrateExerciseToCreate = {
-      problemInput: 'int',
+      problemInput: '2x',
       name: 'integrala',
       description: 'calcula la integrate',
       type: 'integral',
@@ -62,7 +62,8 @@ describe('Integration exercises tests', () => {
       ...integrateExerciseToCreate,
       courseId,
       guideId,
-      pipelineStatus: 'failed'
+      pipelineStatus: 'failed',
+      problemInput: `\\int ${integrateExerciseToCreate.problemInput} dx`
     };
 
     mocks.mockGenerateMathTree({ status: 404 });
@@ -221,8 +222,9 @@ describe('Integration exercises tests', () => {
       });
 
       createExerciseResponse = await requests.createExercise({
-        exercise: integrateExercise, courseId, guideId, token
+        exercise: integrateExerciseToCreate, courseId, guideId, token
       });
+
       integrateExerciseId = createExerciseResponse.body.exerciseId;
       // To wait the math tree is generated and the exercise is marked as generated
       await new Promise((resolve) => setTimeout(resolve, 200));
