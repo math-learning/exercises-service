@@ -37,13 +37,23 @@ exports.up = (knex) => {
       PRIMARY KEY (user_id, exercise_id, course_id, guide_id)
     );
 
-    CREATE TABLE exercise_error_count(
+    CREATE TABLE exercise_errors_count(
       user_id      CHARACTER VARYING(64) NOT NULL,
       guide_id     CHARACTER VARYING(128) NOT NULL,
       course_id    CHARACTER VARYING(128) NOT NULL,
       exercise_id  CHARACTER VARYING(128) NOT NULL,
 
-      count        INT DEFAULT 0,
+      error_count  INT DEFAULT 0,
+      PRIMARY KEY  (user_id, exercise_id, course_id, guide_id)
+    );
+
+    CREATE TABLE exercise_steps_count(
+      user_id      CHARACTER VARYING(64) NOT NULL,
+      guide_id     CHARACTER VARYING(128) NOT NULL,
+      course_id    CHARACTER VARYING(128) NOT NULL,
+      exercise_id  CHARACTER VARYING(128) NOT NULL,
+
+      steps_count   INT DEFAULT 0,
       PRIMARY KEY  (user_id, exercise_id, course_id, guide_id)
     );
   `;
@@ -55,7 +65,8 @@ exports.down = (knex) => {
   const query = `
     DROP TABLE IF EXISTS exercises;
     DROP TABLE IF EXISTS student_exercises;
-    DROP TABLE IF EXISTS exercise_error_count;
+    DROP TABLE IF EXISTS exercise_errors_count;
+    DROP TABLE IF EXISTS exercise_steps_count;
     DROP TYPE IF EXISTS type;
     DROP TYPE IF EXISTS difficulty;
     DROP TYPE IF EXISTS pipeline_status;

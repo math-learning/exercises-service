@@ -10,7 +10,7 @@ const addInvalidStep = async ({ userId, guideId, courseId, exerciseId }) => {
   });
 
   if (!errorCount.count) {
-    await statisticsDb.createErrorCountEntry({ userId, guideId, courseId, exerciseId });
+    await statisticsDb.createExerciseCountEntry({ userId, guideId, courseId, exerciseId });
   }
 
   await statisticsDb.increaseErrorCount({
@@ -18,9 +18,23 @@ const addInvalidStep = async ({ userId, guideId, courseId, exerciseId }) => {
   });
 };
 
+/**
+ * Update step count
+ *
+ */
+const updateTotalStepsCount = async ({ userId, guideId, courseId, exerciseId, stepsCount }) => {
+  const statisticCount = await statisticsDb.getExerciseStepCountEntry({
+    userId, guideId, courseId, exerciseId
+  });
+  if (!statisticCount) {
+    await statisticsDb.createTotalStepsCountEntry({
+      userId, guideId, courseId, exerciseId, stepsCount
+    });
+  }
+};
 
 /**
- * Get exercise error count statistics.
+ * Get course error count statistics.
  *
  */
 const getErrorCountStatistics = async ({ context, courseId }) => {
@@ -35,12 +49,38 @@ const getErrorCountStatistics = async ({ context, courseId }) => {
   });
 };
 
-const groupByProperty = (activityObjs, groupTag) => {
+
+/**
+ * Get course step count statistics.
+ *
+ */
+const getStepCountStatistics = async ({ context, courseId }) => {
+  const exercisesStepCount = await statisticsDb.getExercisesTotalStepCount({ context, courseId });
+
+  const byGuide = groupByProperty(exercisesStepCount, 'guideId');
+
+  return byGuide.list.map((guideId) => {
+    const byExercise = groupByProperty(byGuide.objs[guideId], 'exerciseId');
+
+    const exercises = byExercise.list.map((exerciseId) => {
+      const exercisesGroupedByUsers = byExercise.objs[exerciseId];
+      const users = exercisesGroupedByUsers.map(({ userId }) => userId);
+      const totalCount = exercisesGroupedByUsers.reduce((acum, { count }) => acum + count, 0);
+
+      return { exerciseId, name: exercisesGroupedByUsers[0].name, users, count: totalCount };
+    });
+
+    return { guideId, exercises };
+  });
+};
+
+
+const groupByProperty = (statisticsObjs, groupTag) => {
   const groupList = [];
   const groupObjects = {};
 
-  activityObjs.forEach((activity) => {
-    const group = activity[groupTag];
+  statisticsObjs.forEach((statistic) => {
+    const group = statistic[groupTag];
 
     if (!groupList.includes(group)) {
       groupList.push(group);
@@ -48,7 +88,7 @@ const groupByProperty = (activityObjs, groupTag) => {
     if (!groupObjects[group]) {
       groupObjects[group] = [];
     }
-    groupObjects[group].push(activity);
+    groupObjects[group].push(statistic);
   });
 
   return {
@@ -60,5 +100,7 @@ const groupByProperty = (activityObjs, groupTag) => {
 
 module.exports = {
   addInvalidStep,
-  getErrorCountStatistics
+  getErrorCountStatistics,
+  getStepCountStatistics,
+  updateTotalStepsCount
 };

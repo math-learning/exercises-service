@@ -135,6 +135,10 @@ const deliver = async ({
   await usersService.updateExercise({
     context, userId, guideId, courseId, exerciseId, exerciseMetadata
   });
+
+  await statisticsService.updateTotalStepsCount({
+    context, guideId, courseId, exerciseId, userId, stepsCount: currentExercise.stepList.length
+  });
 };
 
 /**

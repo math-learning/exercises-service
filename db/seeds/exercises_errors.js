@@ -12,11 +12,11 @@ const addErrorsToExistingExercises = async (knex) => {
         course_id: exercise.course_id,
         guide_id: exercise.guide_id,
         exercise_id: exercise.exercise_id,
-        count: difErrorCounts[Math.floor(Math.random() * difErrorCounts.length)]
+        error_count: difErrorCounts[Math.floor(Math.random() * difErrorCounts.length)]
       });
     }
   }
-  await knex('exercise_error_count').insert(errorCountEntries);
+  await knex('exercise_errors_count').insert(errorCountEntries);
 };
 
 module.exports = {

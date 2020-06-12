@@ -236,6 +236,18 @@ const getExerciseStatistics = async ({ token, courseId }) => {
   return { status: response.status, body: await response.json() };
 };
 
+const getExerciseStepsCountStatistics = async ({ token, courseId }) => {
+  const getExUrl = `${baseUrl}/courses/${courseId}/steps/statistics`;
+
+  const response = await fetch(`${getExUrl}`, {
+    headers: {
+      authorization: token,
+      'Content-Type': 'application/json'
+    }
+  });
+  return { status: response.status, body: await response.json() };
+};
+
 const evaluateExercise = async ({
   token,
   courseId,
@@ -274,6 +286,7 @@ module.exports = {
   deliverExercise: errorWrapper(deliverExercise),
   evaluateExercise: errorWrapper(evaluateExercise),
   getExerciseStatistics: errorWrapper(getExerciseStatistics),
+  getExerciseStepsCountStatistics: errorWrapper(getExerciseStepsCountStatistics),
   getSpecificUserExercise: errorWrapper(getSpecificUserExercise),
   getUserExercise: errorWrapper(getUserExercise),
   listExercises: errorWrapper(listExercises),

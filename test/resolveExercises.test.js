@@ -181,6 +181,19 @@ describe('Integration resolve exercises tests', () => {
     });
   });
 
+  describe('Getting steps count statistics (should be empty since no exercise has been delivered)', () => {
+    before(async () => {
+      mocks.mockAuth({ profile: studentProfile });
+      mocks.mockGetCourse({ courseId, course });
+
+      response = await requests.getExerciseStepsCountStatistics({ courseId, token });
+    });
+
+    it('the statistics has been updated', () => {
+      assert.deepEqual(response.body, []);
+    });
+  });
+
   describe('Resolving the exercise (status invalid again)', () => {
     before(async () => {
       mocks.mockAuth({ profile: studentProfile });
@@ -739,6 +752,27 @@ describe('Integration resolve exercises tests', () => {
 
     it('should retrieve the asked exercise', () => {
       assert.deepEqual(sanitizeResponse(response.body), expectedUserExercise);
+    });
+  });
+
+  describe('Getting steps count statistics (should be fulled since the exercise has been delivered)', () => {
+    before(async () => {
+      mocks.mockAuth({ profile: professorProfile });
+      mocks.mockGetCourse({ courseId, course });
+
+      response = await requests.getExerciseStepsCountStatistics({ courseId, token });
+    });
+
+    it('the statistics has been updated', () => {
+      assert.deepEqual(response.body, [{
+        exercises: [{
+          count: 1,
+          exerciseId: derivativeExerciseId,
+          name: newName,
+          users: [studentProfile.userId]
+        }],
+        guideId
+      }]);
     });
   });
 
