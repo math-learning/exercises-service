@@ -9,6 +9,7 @@
     "lint:fix": "NODE_ENV=test eslint --fix src test db",
     "test:app": "export NODE_ENV=test && npm run db:rollback && npm run db:latest && node ./node_modules/.bin/_mocha",
     "test:watch": "npm run test:app -- --watch",
+    "prod": "node src/app",
     "test": "export NODE_ENV=test && npm run lint && nyc --reporter=html --reporter=text npm run test:app",
     "start": "export NODE_ENV=dev && npm run db:latest && npm run db:initial-state && node src/app",
     "start:watch": "export NODE_ENV=dev && npm run db:latest && npm run db:initial-state && nodemon src/app",
