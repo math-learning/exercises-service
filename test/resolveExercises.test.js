@@ -172,10 +172,9 @@ describe('Integration resolve exercises tests', () => {
         guideId,
         exercises: [{
           count: 1,
-          courseId,
-          guideId,
           exerciseId: derivativeExerciseId,
-          name: exerciseName
+          name: exerciseName,
+          users: [studentProfile.userId]
         }]
       }]);
     });
@@ -236,10 +235,9 @@ describe('Integration resolve exercises tests', () => {
         guideId,
         exercises: [{
           count: 2,
-          courseId,
-          guideId,
           exerciseId: derivativeExerciseId,
-          name: exerciseName
+          name: exerciseName,
+          users: [studentProfile.userId]
         }]
       }]);
     });
@@ -900,6 +898,27 @@ describe('Integration resolve exercises tests', () => {
           users: [professorProfile.userId, studentProfile.userId]
         }],
         guideId
+      }]);
+    });
+  });
+
+  describe('Getting error statistics again', () => {
+    before(async () => {
+      mocks.mockAuth({ profile: studentProfile });
+      mocks.mockGetCourse({ courseId, course });
+
+      response = await requests.getExerciseStatistics({ courseId, token });
+    });
+
+    it('the statistics has been updated (only adding the proffesor)', () => {
+      assert.deepEqual(response.body, [{
+        guideId,
+        exercises: [{
+          count: 2,
+          exerciseId: derivativeExerciseId,
+          name: newName,
+          users: [professorProfile.userId, studentProfile.userId]
+        }]
       }]);
     });
   });

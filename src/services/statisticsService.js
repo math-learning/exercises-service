@@ -9,13 +9,27 @@ const addInvalidStep = async ({ userId, guideId, courseId, exerciseId }) => {
     userId, guideId, courseId, exerciseId
   });
 
-  if (!errorCount.count) {
+  if (errorCount.count === null) {
     await statisticsDb.createExerciseCountEntry({ userId, guideId, courseId, exerciseId });
   }
 
   await statisticsDb.increaseErrorCount({
     userId, guideId, courseId, exerciseId, count: errorCount.count + 1
   });
+};
+
+/**
+ * Add error count entry (only if does not exist)
+ *
+ */
+const addErrorCountEntry = async ({ userId, guideId, courseId, exerciseId }) => {
+  const errorCount = await statisticsDb.getExerciseErrorCount({
+    userId, guideId, courseId, exerciseId
+  });
+
+  if (errorCount.count === null) {
+    await statisticsDb.createExerciseCountEntry({ userId, guideId, courseId, exerciseId });
+  }
 };
 
 /**
@@ -26,6 +40,7 @@ const updateTotalStepsCount = async ({ userId, guideId, courseId, exerciseId, st
   const statisticCount = await statisticsDb.getExerciseStepCountEntry({
     userId, guideId, courseId, exerciseId
   });
+
   if (!statisticCount) {
     await statisticsDb.createTotalStepsCountEntry({
       userId, guideId, courseId, exerciseId, stepsCount
@@ -38,15 +53,9 @@ const updateTotalStepsCount = async ({ userId, guideId, courseId, exerciseId, st
  *
  */
 const getErrorCountStatistics = async ({ context, courseId }) => {
-  const errorCount = await statisticsDb.getExercisesErrorCount({ context, courseId });
+  const exercisesErrorCount = await statisticsDb.getExercisesErrorCount({ context, courseId });
 
-  const byGuide = groupByProperty(errorCount, 'guideId');
-
-  return byGuide.list.map((guideId) => {
-    const exercises = byGuide.objs[guideId];
-
-    return { guideId, exercises };
-  });
+  return formatStatistics(exercisesErrorCount);
 };
 
 
@@ -57,7 +66,11 @@ const getErrorCountStatistics = async ({ context, courseId }) => {
 const getStepCountStatistics = async ({ context, courseId }) => {
   const exercisesStepCount = await statisticsDb.getExercisesTotalStepCount({ context, courseId });
 
-  const byGuide = groupByProperty(exercisesStepCount, 'guideId');
+  return formatStatistics(exercisesStepCount);
+};
+
+const formatStatistics = (allStatisticsCount) => {
+  const byGuide = groupByProperty(allStatisticsCount, 'guideId');
 
   return byGuide.list.map((guideId) => {
     const byExercise = groupByProperty(byGuide.objs[guideId], 'exerciseId');
@@ -73,7 +86,6 @@ const getStepCountStatistics = async ({ context, courseId }) => {
     return { guideId, exercises };
   });
 };
-
 
 const groupByProperty = (statisticsObjs, groupTag) => {
   const groupList = [];
@@ -99,6 +111,7 @@ const groupByProperty = (statisticsObjs, groupTag) => {
 
 
 module.exports = {
+  addErrorCountEntry,
   addInvalidStep,
   getErrorCountStatistics,
   getStepCountStatistics,

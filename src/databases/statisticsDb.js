@@ -50,7 +50,7 @@ const getExerciseErrorCount = async (params) => (
  */
 const getExercisesErrorCount = async ({ courseId }) => (
   knex.queryBuilder()
-    .select(knex.raw('eec.exercise_id, eec.guide_id, eec.course_id, ex.name, sum(error_count)::integer as count'))
+    .select(knex.raw('eec.exercise_id, eec.guide_id, eec.course_id, eec.user_id, ex.name, sum(error_count)::integer as count'))
     .from('exercise_errors_count as eec')
     .innerJoin('exercises as ex', function innerJoinFn() {
       this.on('eec.exercise_id', 'ex.exercise_id');
@@ -58,7 +58,7 @@ const getExercisesErrorCount = async ({ courseId }) => (
       this.on('eec.course_id', 'ex.course_id');
     })
     .where('eec.course_id', courseId)
-    .groupBy('eec.exercise_id', 'eec.guide_id', 'eec.course_id', 'ex.name', 'ex.created_at')
+    .groupBy('eec.exercise_id', 'eec.guide_id', 'eec.course_id', 'eec.user_id', 'ex.name', 'ex.created_at')
     .orderBy('ex.created_at')
     .then(processDbResponse)
 );

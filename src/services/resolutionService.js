@@ -39,6 +39,9 @@ const resolve = async ({
     context, type, problemInput, stepList, mathTree: parsedMathTree, currentExpression
   });
 
+  // (only if it does not exist) to indicate an exercise has started to be resolved
+  await statisticsService.addErrorCountEntry({ context, guideId, courseId, exerciseId, userId });
+
   let exerciseMetadata = {};
   if (resolveResult.exerciseStatus === 'invalid') {
     await statisticsService.addInvalidStep({ context, guideId, courseId, exerciseId, userId });
