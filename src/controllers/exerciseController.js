@@ -47,7 +47,7 @@ const create = async (req, res) => {
 };
 
 /**
- * List exercises.
+ * Get exercise status.
  *
  */
 const getExerciseStatus = async (req, res) => {
