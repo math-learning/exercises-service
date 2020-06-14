@@ -62,6 +62,24 @@ const listExercises = async (req, res) => {
 };
 
 /**
+ * List other resolutions.
+ *
+ */
+const listResolutions = async (req, res) => {
+  const { context } = req;
+  const { courseId, guideId, exerciseId } = req.params;
+
+  const resolutions = await usersService.listResolutions({
+    context,
+    guideId,
+    courseId,
+    exerciseId
+  });
+
+  return res.status(200).json(resolutions);
+};
+
+/**
  * Get user exercise.
  *
  */
@@ -114,5 +132,6 @@ module.exports = expressify({
   addUser,
   getExercise,
   listExercises,
+  listResolutions,
   updateExercise
 });

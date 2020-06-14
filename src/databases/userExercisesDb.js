@@ -86,6 +86,26 @@ const getExercise = async ({
 );
 
 /**
+ * Get other resolutions.
+ *
+ */
+const listResolutions = async ({
+  guideId,
+  courseId,
+  exerciseId
+}) => (
+  knex.queryBuilder()
+    .select('user_id', 'step_list')
+    .from('student_exercises as se')
+    .where('course_id', courseId)
+    .where('guide_id', guideId)
+    .where('exercise_id', exerciseId)
+    .where('state', 'delivered')
+    .orderBy('created_at')
+    .then(processDbResponse)
+);
+
+/**
  * Insert user exercises in bulk.
  *
  */
@@ -140,6 +160,7 @@ const restoreExercise = async ({ courseId, guideId, exerciseId }) => (
 
 module.exports = {
   getExercise,
+  listResolutions,
   insertExercises,
   listExercises,
   restoreExercise,

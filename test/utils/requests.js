@@ -112,6 +112,18 @@ const listUserExercises = async ({ token, courseId, guideId }) => {
   return { status: response.status, body: await response.json() };
 };
 
+const listExerciseResolutions = async ({ token, courseId, guideId, exerciseId }) => {
+  const listResolutionsUrl = `${baseUrl}/courses/${courseId}/guides/${guideId}/user/exercises/${exerciseId}/resolutions`;
+
+  const response = await fetch(listResolutionsUrl, {
+    headers: {
+      authorization: token,
+      'Content-Type': 'application/json'
+    }
+  });
+  return { status: response.status, body: await response.json() };
+};
+
 const getUserExercise = async ({
   token,
   courseId,
@@ -311,6 +323,7 @@ module.exports = {
   listExercises: errorWrapper(listExercises),
   listSpecificUserExercises: errorWrapper(listSpecificUserExercises),
   listUserExercises: errorWrapper(listUserExercises),
+  listExerciseResolutions: errorWrapper(listExerciseResolutions),
   removeExercise: errorWrapper(removeExercise),
   resolveExercise: errorWrapper(resolveExercise),
   status,

@@ -97,6 +97,23 @@ const listExercises = async ({
 );
 
 /**
+ * List other resolutions.
+ *
+ */
+const listResolutions = async ({
+  context, guideId, courseId, exerciseId, userId,
+}) => {
+  const resolutions = await userExercisesDB.listResolutions({
+    context, userId, guideId, courseId, exerciseId
+  });
+
+  return resolutions.map((resolution) => ({
+    ...resolution,
+    stepList: JSON.parse(resolution.stepList)
+  }));
+};
+
+/**
  * Get user exercise.
  *
  */
@@ -161,6 +178,7 @@ module.exports = {
   addingExercisesToUsers,
   getExercise,
   listExercises,
+  listResolutions,
   restoreExercise,
   updateExercise
 };

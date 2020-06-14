@@ -54,6 +54,7 @@ router.get('/courses/:courseId/guides/:guideId/user/:userId/exercises', courseVa
 router.get('/courses/:courseId/guides/:guideId/user/exercises/:exerciseId', courseValidatorMiddleware, usersController.getExercise);
 router.get('/courses/:courseId/guides/:guideId/user/:userId/exercises/:exerciseId', courseValidatorMiddleware, usersController.getExercise);
 router.put('/courses/:courseId/guides/:guideId/user/exercises/:exerciseId', courseValidatorMiddleware, usersController.updateExercise);
+router.get('/courses/:courseId/guides/:guideId/user/exercises/:exerciseId/resolutions', courseValidatorMiddleware, usersController.listResolutions);
 
 // Resolution
 router.delete('/courses/:courseId/guides/:guideId/exercises/:exerciseId/step', courseValidatorMiddleware, resolutionController.removeStep);

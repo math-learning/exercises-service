@@ -922,4 +922,30 @@ describe('Integration resolve exercises tests', () => {
       }]);
     });
   });
+
+  describe('Getting exercise resolutions', () => {
+    before(async () => {
+      mocks.mockAuth({ profile: professorProfile });
+      mocks.mockGetCourse({ courseId, course });
+
+      response = await requests.listExerciseResolutions({
+        exerciseId: derivativeExerciseId,
+        courseId,
+        guideId,
+        token
+      });
+    });
+
+    it('status is OK', () => assert.equal(response.status, 200));
+
+    it('the statistics has been updated (only adding the proffesor)', () => {
+      assert.deepEqual(response.body, [{
+        userId: studentProfile.userId,
+        stepList: [firstExpression]
+      }, {
+        userId: professorProfile.userId,
+        stepList: [firstExpression, secondExpression]
+      }]);
+    });
+  });
 });

@@ -111,7 +111,7 @@ describe('Integration exercises tests', () => {
       });
 
       // To wait the math tree is generated and the exercise is marked as generated
-      await new Promise((resolve) => setTimeout(resolve, mathTreeTimeout));
+      await new Promise((resolve) => setTimeout(resolve, mathTreeTimeout + 100));
 
       postPipelineStatus = await requests.getPipelineStatus({
         courseId, guideId, exerciseId: createExerciseResponse.body.exerciseId, token
