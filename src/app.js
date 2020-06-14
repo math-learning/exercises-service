@@ -46,6 +46,7 @@ router.post('/courses/:courseId/guides/:guideId/exercises', courseValidatorMiddl
 router.get('/courses/:courseId/guides/:guideId/exercises', courseValidatorMiddleware, exerciseController.list);
 router.put('/courses/:courseId/guides/:guideId/exercises/:exerciseId', courseValidatorMiddleware, exerciseController.update);
 router.delete('/courses/:courseId/guides/:guideId/exercises/:exerciseId', courseValidatorMiddleware, exerciseController.remove);
+router.get('/courses/:courseId/guides/:guideId/exercises/:exerciseId/status', courseValidatorMiddleware, exerciseController.getExerciseStatus);
 
 // User Exercises
 router.get('/courses/:courseId/guides/:guideId/user/exercises', courseValidatorMiddleware, usersController.listExercises);

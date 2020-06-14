@@ -79,6 +79,7 @@ const mockGenerateMathTree = ({
   status = 200,
   // type,
   // problemInput,
+  timeout = 0,
   times = 1,
   response = { tree: 'input' }
 }) => {
@@ -87,7 +88,9 @@ const mockGenerateMathTree = ({
   nock(mathResolverServiceUrl)
     .post(validatePath)
     .times(times)
-    .reply(status, response);
+    .reply((uri, requestBody, cb) => {
+      setTimeout(() => cb(null, [status, response]), timeout);
+    });
 };
 
 module.exports = {

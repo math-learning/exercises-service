@@ -87,6 +87,16 @@ const generateMathTree = async ({
 };
 
 /**
+ * Get exercise status.
+ *
+ */
+const getExerciseStatus = async ({ context, guideId, courseId, exerciseId }) => {
+  const exercise = await exercisesDB.getExercise({ context, guideId, courseId, exerciseId });
+
+  return { pipelineStatus: exercise.pipelineStatus };
+};
+
+/**
  * List exercises.
  *
  */
@@ -151,6 +161,7 @@ const remove = async ({
 
 module.exports = {
   create,
+  getExerciseStatus,
   list,
   remove,
   update

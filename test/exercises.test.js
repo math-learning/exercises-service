@@ -9,6 +9,7 @@ describe('Integration exercises tests', () => {
   let courseId;
   let guideId;
   let course;
+  let mathTreeTimeout;
   let professorProfile;
 
   let derivativeExercise;
@@ -18,6 +19,7 @@ describe('Integration exercises tests', () => {
   let derivativeExerciseToCreate;
 
   before(() => {
+    mathTreeTimeout = 200;
     courseId = 'course-id';
     guideId = 'guideId';
     token = 'token';
@@ -66,7 +68,8 @@ describe('Integration exercises tests', () => {
       problemInput: `\\int ${integrateExerciseToCreate.problemInput} dx`
     };
 
-    mocks.mockGenerateMathTree({ status: 404 });
+    // to simulate proccessing time
+    mocks.mockGenerateMathTree({ status: 404, timeout: mathTreeTimeout });
 
     return cleanDb();
   });
@@ -76,6 +79,8 @@ describe('Integration exercises tests', () => {
   describe('Creating derivative exercise (by the professor)', () => {
     let createExerciseResponse;
     let expectedExercise;
+    let prePipelineStatus;
+    let postPipelineStatus;
 
     before(async () => {
       expectedExercise = {
@@ -91,8 +96,8 @@ describe('Integration exercises tests', () => {
     });
 
     before(async () => {
-      mocks.mockAuth({ profile: professorProfile });
-      mocks.mockGetCourse({ courseId, course });
+      mocks.mockAuth({ profile: professorProfile, times: 3 });
+      mocks.mockGetCourse({ courseId, course, times: 3 });
       mocks.mockValidateExercise({
         courseId, guideId, ...derivativeExerciseToCreate
       });
@@ -100,8 +105,17 @@ describe('Integration exercises tests', () => {
       createExerciseResponse = await requests.createExercise({
         exercise: derivativeExerciseToCreate, courseId, guideId, token
       });
+
+      prePipelineStatus = await requests.getPipelineStatus({
+        courseId, guideId, exerciseId: createExerciseResponse.body.exerciseId, token
+      });
+
       // To wait the math tree is generated and the exercise is marked as generated
-      await new Promise((resolve) => setTimeout(resolve, 200));
+      await new Promise((resolve) => setTimeout(resolve, mathTreeTimeout));
+
+      postPipelineStatus = await requests.getPipelineStatus({
+        courseId, guideId, exerciseId: createExerciseResponse.body.exerciseId, token
+      });
     });
 
     it('status is OK', () => assert.equal(createExerciseResponse.status, 201));
@@ -110,6 +124,14 @@ describe('Integration exercises tests', () => {
       assert.property(createExerciseResponse.body, 'exerciseId');
       delete createExerciseResponse.body.exerciseId;
       assert.deepEqual(sanitizeResponse(createExerciseResponse.body), expectedExercise);
+    });
+
+    it('pre pipeline status should be waiting', () => {
+      assert.equal(prePipelineStatus.body.pipelineStatus, 'waiting');
+    });
+
+    it('post pipeline status should be generated', () => {
+      assert.equal(postPipelineStatus.body.pipelineStatus, 'failed');
     });
   });
 

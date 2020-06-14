@@ -268,6 +268,24 @@ const evaluateExercise = async ({
   return { status: response.status, body: await response.json() };
 };
 
+const getPipelineStatus = async ({
+  token,
+  courseId,
+  guideId,
+  exerciseId
+}) => {
+  const evaluateExUrl = `${baseUrl}/courses/${courseId}/guides/${guideId}/exercises/${exerciseId}/status`;
+
+  const response = await fetch(`${evaluateExUrl}`, {
+    headers: {
+      authorization: token,
+      'Content-Type': 'application/json'
+    }
+  });
+
+  return { status: response.status, body: await response.json() };
+};
+
 
 function errorWrapper(funct) {
   return function inner(...args) {
@@ -287,6 +305,7 @@ module.exports = {
   evaluateExercise: errorWrapper(evaluateExercise),
   getExerciseStatistics: errorWrapper(getExerciseStatistics),
   getExerciseStepsCountStatistics: errorWrapper(getExerciseStepsCountStatistics),
+  getPipelineStatus: errorWrapper(getPipelineStatus),
   getSpecificUserExercise: errorWrapper(getSpecificUserExercise),
   getUserExercise: errorWrapper(getUserExercise),
   listExercises: errorWrapper(listExercises),
