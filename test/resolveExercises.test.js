@@ -174,7 +174,10 @@ describe('Integration resolve exercises tests', () => {
           count: 1,
           exerciseId: derivativeExerciseId,
           name: exerciseName,
-          users: [studentProfile.userId]
+          users: [{
+            userId: studentProfile.userId,
+            count: 1
+          }]
         }]
       }]);
     });
@@ -237,7 +240,10 @@ describe('Integration resolve exercises tests', () => {
           count: 2,
           exerciseId: derivativeExerciseId,
           name: exerciseName,
-          users: [studentProfile.userId]
+          users: [{
+            userId: studentProfile.userId,
+            count: 2
+          }]
         }]
       }]);
     });
@@ -767,7 +773,10 @@ describe('Integration resolve exercises tests', () => {
           count: 1,
           exerciseId: derivativeExerciseId,
           name: newName,
-          users: [studentProfile.userId]
+          users: [{
+            count: 1,
+            userId: studentProfile.userId
+          }]
         }],
         guideId
       }]);
@@ -895,7 +904,13 @@ describe('Integration resolve exercises tests', () => {
           count: 3,
           exerciseId: derivativeExerciseId,
           name: newName,
-          users: [professorProfile.userId, studentProfile.userId]
+          users: [{
+            count: 2,
+            userId: professorProfile.userId,
+          }, {
+            count: 1,
+            userId: studentProfile.userId
+          }]
         }],
         guideId
       }]);
@@ -917,7 +932,13 @@ describe('Integration resolve exercises tests', () => {
           count: 2,
           exerciseId: derivativeExerciseId,
           name: newName,
-          users: [professorProfile.userId, studentProfile.userId]
+          users: [{
+            count: 0,
+            userId: professorProfile.userId,
+          }, {
+            count: 2,
+            userId: studentProfile.userId
+          }]
         }]
       }]);
     });

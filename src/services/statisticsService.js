@@ -77,7 +77,7 @@ const formatStatistics = (allStatisticsCount) => {
 
     const exercises = byExercise.list.map((exerciseId) => {
       const exercisesGroupedByUsers = byExercise.objs[exerciseId];
-      const users = exercisesGroupedByUsers.map(({ userId }) => userId);
+      const users = exercisesGroupedByUsers.map(({ userId, count }) => ({ userId, count }));
       const totalCount = exercisesGroupedByUsers.reduce((acum, { count }) => acum + count, 0);
 
       return { exerciseId, name: exercisesGroupedByUsers[0].name, users, count: totalCount };
