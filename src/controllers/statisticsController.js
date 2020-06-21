@@ -30,7 +30,7 @@ const getStepCountStatistics = async (req, res) => {
 };
 
 /**
- * Get exercise step count statistics.
+ * Get users qualification statistics.
  *
  */
 const getQualificationsStatistics = async (req, res) => {
