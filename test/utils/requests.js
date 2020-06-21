@@ -167,9 +167,9 @@ const updateUserExercise = async ({
   exerciseId,
   exerciseMetadata
 }) => {
-  const updateExUrl = `${baseUrl}/courses/${courseId}/guides/${guideId}/user/exercises/${exerciseId}`;
+  const updateExUrl = `${baseUrl}/courses/${courseId}/guides/${guideId}/user/${userId}/exercises/${exerciseId}`;
 
-  const response = await fetch(`${updateExUrl}?userId=${userId}`, {
+  const response = await fetch(updateExUrl, {
     method: 'put',
     body: JSON.stringify(exerciseMetadata),
     headers: {

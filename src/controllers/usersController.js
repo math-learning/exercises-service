@@ -105,14 +105,12 @@ const getExercise = async (req, res) => {
 
 const updateExercise = async (req, res) => {
   const {
-    userId
-  } = req.query;
-  const {
     courseId,
     guideId,
     exerciseId
   } = req.params;
 
+  const userId = req.params.userId || context.user.userId;
   const exerciseMetadata = extractMetadata(req.body);
   validateMetadata(exerciseMetadata);
 
