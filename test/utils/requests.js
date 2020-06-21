@@ -27,6 +27,20 @@ const createExercise = async ({
   return { status: response.status, body: await response.json() };
 };
 
+const copyCourseExercises = async ({ token, sourceCourseId, targetCourseId }) => {
+  const createExUrl = `${baseUrl}/courses/${sourceCourseId}/copy`;
+
+  const response = await fetch(createExUrl, {
+    method: 'post',
+    body: JSON.stringify({ targetCourseId }),
+    headers: {
+      authorization: token,
+      'Content-Type': 'application/json'
+    }
+  });
+  return { status: response.status };
+};
+
 const updateExercise = async ({
   token, courseId, guideId, exerciseId, exercise = {}
 }) => {
@@ -323,6 +337,7 @@ function errorWrapper(funct) {
 
 module.exports = {
   addUser: errorWrapper(addUser),
+  copyCourseExercises: errorWrapper(copyCourseExercises),
   createExercise: errorWrapper(createExercise),
   deleteExerciseStep: errorWrapper(deleteExerciseStep),
   deliverExercise: errorWrapper(deliverExercise),
