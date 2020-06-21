@@ -1,4 +1,5 @@
 const statisticsDb = require('../databases/statisticsDb');
+const usersDb = require('../databases/userExercisesDb');
 
 /**
  * Add invalid step statistic.
@@ -109,10 +110,28 @@ const groupByProperty = (statisticsObjs, groupTag) => {
   };
 };
 
+/**
+ * Get course step count statistics.
+ *
+ */
+const getQualificationsStatistics = async ({ context, courseId }) => {
+  const { course: { users = [] } } = context;
+  const usersQualifications = await usersDb.getUsersQualifications({ context, courseId });
+
+  const completeQualifications = usersQualifications.map((userQual) => {
+    const matchedUser = users.find((user) => userQual.userId === user.userId);
+
+    return { ...userQual, ...matchedUser };
+  });
+
+  return completeQualifications;
+};
+
 
 module.exports = {
   addErrorCountEntry,
   addInvalidStep,
+  getQualificationsStatistics,
   getErrorCountStatistics,
   getStepCountStatistics,
   updateTotalStepsCount

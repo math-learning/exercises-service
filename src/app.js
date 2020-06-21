@@ -66,6 +66,7 @@ router.post('/courses/:courseId/guides/:guideId/exercises/evaluate', courseValid
 // Statistics
 router.get('/courses/:courseId/errors/statistics', courseValidatorMiddleware, statisticsController.getErrorCountStatistics);
 router.get('/courses/:courseId/steps/statistics', courseValidatorMiddleware, statisticsController.getStepCountStatistics);
+router.get('/courses/:courseId/qualifications/statistics', courseValidatorMiddleware, statisticsController.getQualificationsStatistics);
 
 app.use(router);
 

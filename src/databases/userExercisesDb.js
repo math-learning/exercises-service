@@ -157,9 +157,25 @@ const restoreExercise = async ({ courseId, guideId, exerciseId }) => (
     .then(processDbResponse)
 );
 
+/**
+ * Get users qualification
+ *
+ */
+const getUsersQualifications = async ({ courseId }) => (
+  knex.queryBuilder()
+    .select(knex.raw('user_id, sum(calification)::integer as qualification, count(*)::integer as delivery_count'))
+    .from('student_exercises')
+    .where('course_id', courseId)
+    .whereNotNull('calification')
+    .groupBy('user_id')
+    .orderBy('qualification', 'desc')
+    .then(processDbResponse)
+);
+
 
 module.exports = {
   getExercise,
+  getUsersQualifications,
   listResolutions,
   insertExercises,
   listExercises,

@@ -29,7 +29,22 @@ const getStepCountStatistics = async (req, res) => {
   return res.status(200).json(stepsCountStatistics);
 };
 
+/**
+ * Get exercise step count statistics.
+ *
+ */
+const getQualificationsStatistics = async (req, res) => {
+  const { courseId } = req.params;
+
+  const qualificationsStatistics = await statisticsService.getQualificationsStatistics({
+    context: req.context, courseId
+  });
+
+  return res.status(200).json(qualificationsStatistics);
+};
+
 module.exports = expressify({
+  getQualificationsStatistics,
   getErrorCountStatistics,
   getStepCountStatistics
 });

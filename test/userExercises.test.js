@@ -10,6 +10,7 @@ describe('Integration user exercises tests', () => {
   let guideId;
   let course;
   let studentProfile;
+  let secondStudentProfile;
   let professorProfile;
 
   let derivativeExerciseId;
@@ -32,6 +33,12 @@ describe('Integration user exercises tests', () => {
       email: 'pedro@gmail',
       rol: 'student'
     };
+    secondStudentProfile = {
+      userId: 'second-student',
+      name: 'pachu',
+      email: 'pachu@gmail',
+      rol: 'student'
+    };
     professorProfile = {
       userId: 'professor',
       name: 'licha',
@@ -43,7 +50,7 @@ describe('Integration user exercises tests', () => {
       description: 'description',
       courseId,
       professors: [professorProfile],
-      users: [professorProfile, studentProfile]
+      users: [professorProfile, studentProfile, secondStudentProfile]
     };
     derivativeExerciseToCreate = {
       problemInput: 'x',
@@ -161,6 +168,17 @@ describe('Integration user exercises tests', () => {
   describe('Adding user', () => {
     before(async () => {
       mocks.mockAuth({ profile: studentProfile });
+      mocks.mockGetCourse({ courseId, course });
+
+      response = await requests.addUser({ courseId, user: { userId }, token });
+    });
+
+    it('status is OK', () => assert.equal(response.status, 201));
+  });
+
+  describe('Adding second user', () => {
+    before(async () => {
+      mocks.mockAuth({ profile: secondStudentProfile });
       mocks.mockGetCourse({ courseId, course });
 
       response = await requests.addUser({ courseId, user: { userId }, token });
@@ -309,6 +327,24 @@ describe('Integration user exercises tests', () => {
     });
   });
 
+  describe('Getting qualifications statistics (should be empty)', () => {
+    before(async () => {
+      mocks.mockAuth({ profile: professorProfile });
+      mocks.mockGetCourse({ courseId, course });
+
+      response = await requests.getUsersQualificationsStatistics({
+        courseId,
+        token
+      });
+    });
+
+    it('status is OK', () => assert.equal(response.status, 200));
+
+    it('should retrieve the updated exercise', () => {
+      assert.deepEqual(sanitizeResponse(response.body), []);
+    });
+  });
+
   describe('Updating the derivative user exercise (by the professor)', () => {
     before(async () => {
       mocks.mockAuth({ profile: professorProfile });
@@ -325,6 +361,112 @@ describe('Integration user exercises tests', () => {
     });
 
     it('status is OK', () => assert.equal(response.status, 200));
+  });
+
+  describe('Getting qualifications statistics (should have increase the ranking)', () => {
+    before(async () => {
+      mocks.mockAuth({ profile: professorProfile });
+      mocks.mockGetCourse({ courseId, course });
+
+      response = await requests.getUsersQualificationsStatistics({
+        courseId,
+        token
+      });
+    });
+
+    it('status is OK', () => assert.equal(response.status, 200));
+
+    it('should retrieve the updated exercise', () => {
+      assert.deepEqual(sanitizeResponse(response.body), [{
+        ...studentProfile,
+        deliveryCount: 1,
+        qualification: 10
+      }]);
+    });
+  });
+
+  describe('Updating the integral user exercise (by the professor)', () => {
+    before(async () => {
+      mocks.mockAuth({ profile: professorProfile });
+      mocks.mockGetCourse({ courseId, course });
+
+      response = await requests.updateUserExercise({
+        exerciseMetadata: { calification: 5 },
+        exerciseId: integrateExerciseId,
+        courseId,
+        guideId,
+        userId,
+        token
+      });
+    });
+
+    it('status is OK', () => assert.equal(response.status, 200));
+  });
+
+  describe('Getting qualifications statistics (should have increase the ranking again)', () => {
+    before(async () => {
+      mocks.mockAuth({ profile: professorProfile });
+      mocks.mockGetCourse({ courseId, course });
+
+      response = await requests.getUsersQualificationsStatistics({
+        courseId,
+        token
+      });
+    });
+
+    it('status is OK', () => assert.equal(response.status, 200));
+
+    it('should retrieve the updated exercise', () => {
+      assert.deepEqual(sanitizeResponse(response.body), [{
+        ...studentProfile,
+        deliveryCount: 2,
+        qualification: 15
+      }]);
+    });
+  });
+
+  describe('Updating the second user exercise (by the professor)', () => {
+    before(async () => {
+      mocks.mockAuth({ profile: professorProfile });
+      mocks.mockGetCourse({ courseId, course });
+
+      response = await requests.updateUserExercise({
+        exerciseMetadata: { calification: 5 },
+        exerciseId: derivativeExerciseId,
+        courseId,
+        guideId,
+        userId: secondStudentProfile.userId,
+        token
+      });
+    });
+
+    it('status is OK', () => assert.equal(response.status, 200));
+  });
+
+  describe('Getting qualifications statistics (should retrieve both students qualif sorted)', () => {
+    before(async () => {
+      mocks.mockAuth({ profile: professorProfile });
+      mocks.mockGetCourse({ courseId, course });
+
+      response = await requests.getUsersQualificationsStatistics({
+        courseId,
+        token
+      });
+    });
+
+    it('status is OK', () => assert.equal(response.status, 200));
+
+    it('should retrieve the updated exercise', () => {
+      assert.deepEqual(sanitizeResponse(response.body), [{
+        ...studentProfile,
+        deliveryCount: 2,
+        qualification: 15
+      }, {
+        ...secondStudentProfile,
+        deliveryCount: 1,
+        qualification: 5
+      }]);
+    });
   });
 
   describe('Asking the derivative user exercise (again)', () => {
@@ -387,7 +529,7 @@ describe('Integration user exercises tests', () => {
         userId,
         exerciseId: integrateExerciseId,
         state: 'incompleted',
-        calification: null
+        calification: 5
       }];
     });
 
