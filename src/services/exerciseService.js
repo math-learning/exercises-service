@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const mathResolverClient = require('../clients/mathResolverClient');
 const exercisesDB = require('../databases/exercisesDb');
 const usersService = require('../services/usersService');
@@ -63,6 +64,34 @@ const create = async ({
   });
 
   return exerciseToBeRetrieved;
+};
+
+/**
+ * Copy course exercises.
+ *
+ */
+const copyCourseExercises = async ({ context, sourceCourseId, targetCourseId }) => {
+  const sourceExercises = await exercisesDB.listCourseExercises({
+    context, courseId: sourceCourseId
+  });
+
+  const columns = ['guideId', 'problemInput', 'name', 'description', 'initialHint', 'type', 'difficulty', 'pipelineStatus'];
+  const targetExercises = sourceExercises.map((exercise) => ({
+    ..._.pick(exercise, columns),
+    courseId: targetCourseId
+  }));
+  await exercisesDB.insertExercises({ exercises: targetExercises });
+
+  // adding exercises to the creator
+  const { course } = context;
+  const userIds = course.users.map((user) => user.userId);
+  const targetUserExercises = await usersService.addingCourseExercisesToUsers({
+    context,
+    courseId: targetCourseId,
+    userIds
+  });
+
+  return targetUserExercises;
 };
 
 const generateMathTree = async ({
@@ -161,6 +190,7 @@ const remove = async ({
 
 module.exports = {
   create,
+  copyCourseExercises,
   getExerciseStatus,
   list,
   remove,

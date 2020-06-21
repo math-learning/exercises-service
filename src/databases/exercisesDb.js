@@ -70,6 +70,21 @@ const listExercises = async ({ courseId, guideId }) => {
 };
 
 /**
+ * List course exercises.
+ *
+ */
+const listCourseExercises = async ({ courseId }) => {
+  if (!courseId) {
+    throw new Error('courseId should be defined');
+  }
+
+  return knex('exercises')
+    .select(commonColumns)
+    .where(snakelize({ courseId }))
+    .then(processDbResponse);
+};
+
+/**
  * List exercises by ids
  *
  */
@@ -135,9 +150,23 @@ const removeExercise = async ({ courseId, guideId, exerciseId }) => {
   await trx.commit();
 };
 
+/**
+ * Add exercises into course
+ *
+ */
+const insertExercises = async ({ exercises }) => (
+  knex('exercises')
+    .insert(snakelize(exercises))
+    .returning(commonColumns)
+    .then(processDbResponse)
+);
+
+
 module.exports = {
   createExercise,
+  insertExercises,
   getExercise,
+  listCourseExercises,
   listExercisesByIds,
   listExercises,
   removeExercise,

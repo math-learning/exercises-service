@@ -47,6 +47,23 @@ const create = async (req, res) => {
 };
 
 /**
+ * Copy course exercises
+ *
+ */
+const copyCourseExercises = async (req, res) => {
+  const sourceCourseId = req.params.courseId;
+  const { targetCourseId } = req.body;
+
+  await exerciseService.copyCourseExercises({
+    context: req.context,
+    targetCourseId,
+    sourceCourseId
+  });
+
+  return res.status(204).json({});
+};
+
+/**
  * Get exercise status.
  *
  */
@@ -134,6 +151,7 @@ const remove = async (req, res) => {
 
 module.exports = expressify({
   create,
+  copyCourseExercises,
   getExerciseStatus,
   list,
   remove,
