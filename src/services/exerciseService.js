@@ -75,7 +75,7 @@ const copyCourseExercises = async ({ context, sourceCourseId, targetCourseId }) 
     context, courseId: sourceCourseId
   });
 
-  const columns = ['guideId', 'problemInput', 'name', 'description', 'initialHint', 'type', 'difficulty', 'pipelineStatus'];
+  const columns = ['guideId', 'problemInput', 'name', 'description', 'initialHint', 'type', 'difficulty', 'pipelineStatus', 'mathTree'];
   const targetExercises = sourceExercises.map((exercise) => ({
     ..._.pick(exercise, columns),
     courseId: targetCourseId

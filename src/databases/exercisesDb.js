@@ -79,7 +79,7 @@ const listCourseExercises = async ({ courseId }) => {
   }
 
   return knex('exercises')
-    .select(commonColumns)
+    .select('*')
     .where(snakelize({ courseId }))
     .then(processDbResponse);
 };
