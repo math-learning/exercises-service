@@ -111,7 +111,7 @@ const groupByProperty = (statisticsObjs, groupTag) => {
 };
 
 /**
- * Get course step count statistics.
+ * Get users qualification statistics.
  *
  */
 const getQualificationsStatistics = async ({ context, courseId }) => {
