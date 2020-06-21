@@ -1,6 +1,9 @@
 const exerciseErrors = require('../exercises_errors');
 
 exports.seed = async (knex) => {
+  return; // No initial seed for now
+
+  /* eslint-disable */
   const currentExercises = await knex('exercises').select();
   const currentStudentExercises = await knex('student_exercises').select();
   const currentErrorCount = await knex('exercise_errors_count').select();
