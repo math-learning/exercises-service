@@ -28,7 +28,7 @@
     "http-errors": "~1.6.1",
     "install": "^0.13.0",
     "knex": "^0.19.4",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "nock": "~9.0.14",
     "node-fetch": "^2.6.0",
     "nodemon": "^1.19.2",
