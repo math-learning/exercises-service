@@ -27,7 +27,7 @@
     "expressify": "^2.0.0",
     "http-errors": "~1.6.1",
     "install": "^0.13.0",
-    "knex": "^0.19.4",
+    "knex": "^2.4.0",
     "lodash": "^4.17.15",
     "nock": "~9.0.14",
     "node-fetch": "^2.6.0",
